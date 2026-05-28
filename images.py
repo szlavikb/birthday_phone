@@ -18,21 +18,26 @@ def _safe_name(filename: str) -> str:
     return re.sub(r"[^\w.\-]", "_", filename)
 
 
+def _folder_name(phone_name: str) -> str:
+    """Convert a phone name to its filesystem folder name (spaces → underscores)."""
+    return phone_name.replace(" ", "_")
+
+
 def list_images(phone_name: str) -> list[str]:
     """Return sorted list of image URLs for a phone."""
-    folder = IMAGES_DIR / phone_name
+    folder = IMAGES_DIR / _folder_name(phone_name)
     if not folder.exists():
         return []
     files = sorted(
         f.name for f in folder.iterdir()
         if f.is_file() and f.suffix.lower() in _ALLOWED_EXTS
     )
-    return [f"/static/images/{quote(phone_name)}/{quote(name)}" for name in files]
+    return [f"/static/images/{quote(_folder_name(phone_name))}/{quote(name)}" for name in files]
 
 
 def save_image(phone_name: str, file: FileStorage) -> str:
     """Save an uploaded image, avoiding overwrites. Returns the URL."""
-    folder = IMAGES_DIR / phone_name
+    folder = IMAGES_DIR / _folder_name(phone_name)
     folder.mkdir(parents=True, exist_ok=True)
 
     safe = _safe_name(file.filename or "image")
@@ -44,12 +49,12 @@ def save_image(phone_name: str, file: FileStorage) -> str:
         counter += 1
 
     file.save(dest)
-    return f"/static/images/{quote(phone_name)}/{quote(dest.name)}"
+    return f"/static/images/{quote(_folder_name(phone_name))}/{quote(dest.name)}"
 
 
 def delete_image(phone_name: str, filename: str) -> bool:
     """Delete an image file. Returns True if deleted, False if not found."""
-    target = IMAGES_DIR / phone_name / _safe_name(filename)
+    target = IMAGES_DIR / _folder_name(phone_name) / _safe_name(filename)
     if target.exists():
         target.unlink()
         return True
