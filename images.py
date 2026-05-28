@@ -5,6 +5,7 @@ Security: all filenames are sanitised to prevent path traversal.
 import os
 import re
 from pathlib import Path
+from urllib.parse import quote
 from werkzeug.datastructures import FileStorage
 
 from config import IMAGES_DIR
@@ -26,7 +27,7 @@ def list_images(phone_name: str) -> list[str]:
         f.name for f in folder.iterdir()
         if f.is_file() and f.suffix.lower() in _ALLOWED_EXTS
     )
-    return [f"/static/images/{phone_name}/{name}" for name in files]
+    return [f"/static/images/{quote(phone_name)}/{quote(name)}" for name in files]
 
 
 def save_image(phone_name: str, file: FileStorage) -> str:
@@ -43,7 +44,7 @@ def save_image(phone_name: str, file: FileStorage) -> str:
         counter += 1
 
     file.save(dest)
-    return f"/static/images/{phone_name}/{dest.name}"
+    return f"/static/images/{quote(phone_name)}/{quote(dest.name)}"
 
 
 def delete_image(phone_name: str, filename: str) -> bool:
