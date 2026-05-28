@@ -222,6 +222,8 @@ button { cursor: pointer; border: none; font-family: inherit; font-size: inherit
    =================================================================== */
 .table-wrapper {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--header-h) - 48px);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: var(--bg-card);
@@ -943,7 +945,8 @@ textarea:focus { outline: none; border-color: var(--accent); }
    RESPONSIVE
    =================================================================== */
 @media (max-width: 768px) {
-  .header-inner { padding: 0 16px; flex-wrap: wrap; height: auto; padding-top: 10px; padding-bottom: 10px; }
+  .header-inner { padding: 0 16px; flex-wrap: nowrap; height: auto; padding-top: 10px; padding-bottom: 10px; }
+  .brand-icon { display: none; }
   .brand-sub { display: none; }
   .tab span:not(svg) { display: none; }
   .main-content { padding: 16px 12px 80px; }

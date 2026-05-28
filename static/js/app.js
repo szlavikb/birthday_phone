@@ -780,8 +780,6 @@ const App = (() => {
     const d = state.descriptions.find(d => d.column_key === colKey);
     document.getElementById('descModalTitle').textContent = d ? d.label : colKey;
     document.getElementById('descModalText').textContent  = d ? d.description : '–';
-    document.getElementById('descModalTextarea').value    = d ? d.description : '';
-    toggleDescEdit(false);
     document.getElementById('descModalOverlay').classList.remove('hidden');
     document.getElementById('descModal').classList.remove('hidden');
   }
@@ -790,27 +788,6 @@ const App = (() => {
     document.getElementById('descModalOverlay').classList.add('hidden');
     document.getElementById('descModal').classList.add('hidden');
     state.activeDescKey = null;
-  }
-
-  function toggleDescEdit(show) {
-    document.getElementById('descModalEdit').classList.toggle('hidden', !show);
-    document.getElementById('descEditToggleBtn').classList.toggle('hidden', show);
-  }
-
-  async function saveDescription() {
-    const key  = state.activeDescKey;
-    const text = document.getElementById('descModalTextarea').value.trim();
-    if (!key || !text) return;
-    await fetch('/api/descriptions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ column_key: key, description: text }),
-    });
-    // Update local state
-    const d = state.descriptions.find(d => d.column_key === key);
-    if (d) d.description = text;
-    document.getElementById('descModalText').textContent = text;
-    toggleDescEdit(false);
   }
 
   /* ---------------------------------------------------------------
@@ -994,8 +971,6 @@ const App = (() => {
     deletePhone,
     openDescModal,
     closeDescModal,
-    toggleDescEdit,
-    saveDescription,
     triggerUpload,
     deleteImage,
     scrollToSlide,
