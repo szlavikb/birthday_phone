@@ -1,13 +1,19 @@
 """
 Shared constants and configuration.
 """
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR   = Path(__file__).parent
 DATA_DIR   = BASE_DIR / "data"
 DB_PATH    = DATA_DIR / "phones.db"
 STATE_PATH = DATA_DIR / "app_state.json"
-IMAGES_DIR = BASE_DIR / "static" / "images"
+
+CLOUDINARY_FOLDER = os.getenv("CLOUDINARY_FOLDER", "birthday_phone")
 
 # ---------------------------------------------------------------------------
 # Hardcoded reference phone (NOT stored in the database)

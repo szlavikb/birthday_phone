@@ -6,4 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "flask>=3.0",
+    "cloudinary>=1.36",
+    "python-dotenv>=1.0",
 ]

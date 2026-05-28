@@ -4,7 +4,7 @@ Each public function opens/closes its own connection – no shared state.
 """
 import sqlite3
 
-from config import DB_PATH, DATA_DIR, IMAGES_DIR, DEFAULT_DESCRIPTIONS
+from config import DB_PATH, DATA_DIR, DEFAULT_DESCRIPTIONS
 
 
 # ---------------------------------------------------------------------------
@@ -45,7 +45,6 @@ def _to_float(s: str) -> float | None:
 def init_db() -> None:
     """Create tables and seed descriptions if the DB is fresh."""
     DATA_DIR.mkdir(exist_ok=True)
-    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     with get_db() as conn:
         _create_tables(conn)
         _seed_descriptions(conn)
