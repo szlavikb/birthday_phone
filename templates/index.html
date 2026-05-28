@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mobilválasztó</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ===== WINNER BANNER ===== -->
+<div id="winnerBanner" class="winner-banner hidden">
+  <span class="winner-crown">🏆</span>
+  <span id="winnerBannerText"></span>
+  <button class="winner-clear" onclick="App.clearWinner()" title="Nyertes törlése">✕</button>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-icon">📱</span>
+      <div>
+        <h1 class="brand-title">Mobilválasztó</h1>
+        <p class="brand-sub">Interaktív telefon-összehasonlító</p>
+      </div>
+    </div>
+    <nav class="view-tabs" role="tablist" aria-label="Nézet">
+      <button class="tab active" data-view="table" onclick="App.setView('table')">
+        <svg viewBox="0 0 20 20"><rect x="2" y="3" width="16" height="3" rx="1"/><rect x="2" y="8.5" width="16" height="3" rx="1"/><rect x="2" y="14" width="16" height="3" rx="1"/></svg>
+        Táblázat
+      </button>
+      <button class="tab" data-view="cards" onclick="App.setView('cards')">
+        <svg viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
+        Kártyák
+      </button>
+      <button class="tab" data-view="compare" onclick="App.setView('compare')">
+        <svg viewBox="0 0 20 20"><rect x="2" y="2" width="5" height="16" rx="1.5"/><rect x="8.5" y="2" width="5" height="16" rx="1.5"/><rect x="15" y="2" width="3" height="16" rx="1.5" opacity=".4"/></svg>
+        Összehasonlítás
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== COMPARE SELECTOR BAR (shown in compare mode) ===== -->
+<div id="compareSelectorBar" class="compare-selector-bar hidden">
+  <span class="selector-label">Válassz 2–3 telefont:</span>
+  <div id="compareSelectorChips" class="selector-chips"></div>
+  <button class="btn-secondary btn-sm" onclick="App.clearCompareSelection()">Törlés</button>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main id="mainContent" class="main-content">
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Adatok betöltése…</p>
+  </div>
+</main>
+
+<!-- ===== DETAIL DRAWER ===== -->
+<div id="drawerOverlay" class="drawer-overlay hidden" onclick="App.closeDrawer()"></div>
+<aside id="detailDrawer" class="detail-drawer hidden">
+  <div class="drawer-header">
+    <button class="drawer-close" onclick="App.closeDrawer()">✕</button>
+    <div id="drawerTitle" class="drawer-title-area"></div>
+    <div id="drawerActions" class="drawer-actions"></div>
+  </div>
+  <div id="drawerBody" class="drawer-body"></div>
+</aside>
+
+<!-- ===== COLUMN DESCRIPTION MODAL ===== -->
+<div id="descModalOverlay" class="modal-overlay hidden" onclick="App.closeDescModal()"></div>
+<div id="descModal" class="modal hidden">
+  <div class="modal-header">
+    <h3 id="descModalTitle"></h3>
+    <button class="modal-close" onclick="App.closeDescModal()">✕</button>
+  </div>
+  <div class="modal-body">
+    <p id="descModalText" class="desc-text"></p>
+    <div id="descModalEdit" class="desc-edit hidden">
+      <label class="edit-label">Leírás szerkesztése:</label>
+      <textarea id="descModalTextarea" rows="4"></textarea>
+      <div class="edit-actions">
+        <button class="btn-primary btn-sm" onclick="App.saveDescription()">Mentés</button>
+        <button class="btn-secondary btn-sm" onclick="App.toggleDescEdit(false)">Mégse</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost btn-sm" id="descEditToggleBtn" onclick="App.toggleDescEdit(true)">✏️ Szerkesztés</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UPLOAD INPUT (hidden) ===== -->
+<input type="file" id="fileUploadInput" accept="image/*" multiple style="display:none" />
+
+<!-- ===== PHONE EDITOR MODAL ===== -->
+<div id="phoneModalOverlay" class="modal-overlay hidden" onclick="App.closePhoneModal()"></div>
+<div id="phoneModal" class="modal phone-modal hidden">
+  <div class="modal-header">
+    <h3 id="phoneModalTitle">Új telefon</h3>
+    <button class="modal-close" onclick="App.closePhoneModal()">✕</button>
+  </div>
+  <div class="modal-body phone-modal-body">
+    <input type="hidden" id="pmPhoneId" value="" />
+
+    <div class="pm-section-title">Alapadatok</div>
+    <div class="pm-row">
+      <div class="pm-field pm-wide">
+        <label>Modell neve *</label>
+        <input type="text" id="pmName" placeholder="pl. Samsung Galaxy S25" />
+      </div>
+      <div class="pm-field">
+        <label>Ár</label>
+        <input type="text" id="pmPrice" placeholder="pl. 189 990 Ft" />
+      </div>
+    </div>
+    <div class="pm-row">
+      <div class="pm-field pm-wide">
+        <label>Link</label>
+        <input type="text" id="pmLink" placeholder="https://..." />
+      </div>
+    </div>
+
+    <div class="pm-section-title">Kamera</div>
+    <div class="pm-row">
+      <div class="pm-field">
+        <label>Szenzorméret</label>
+        <input type="text" id="pmSensorSize" placeholder='pl. 1/1.56"' />
+      </div>
+      <div class="pm-field">
+        <label>Rekesz</label>
+        <input type="text" id="pmAperture" placeholder="pl. f/1.8" />
+      </div>
+      <div class="pm-field pm-checkbox-field">
+        <label><input type="checkbox" id="pmOis" /> OIS (képstabilizátor)</label>
+      </div>
+    </div>
+    <div class="pm-row">
+      <div class="pm-field">
+        <label>Max. zoom</label>
+        <input type="text" id="pmMaxZoom" placeholder="pl. 3× optikai" />
+      </div>
+      <div class="pm-field">
+        <label>Max. videó</label>
+        <input type="text" id="pmMaxVideo" placeholder="pl. 4K@60fps" />
+      </div>
+    </div>
+
+    <div class="pm-section-title">Teljesítmény &amp; méret</div>
+    <div class="pm-row">
+      <div class="pm-field">
+        <label>Akkumulátor</label>
+        <input type="text" id="pmBattery" placeholder="pl. 5000 mAh" />
+      </div>
+      <div class="pm-field">
+        <label>ROM / RAM</label>
+        <input type="text" id="pmStorage" placeholder="pl. 256GB / 8GB" />
+      </div>
+    </div>
+    <div class="pm-row">
+      <div class="pm-field">
+        <label>Magasság (mm)</label>
+        <input type="number" id="pmHeight" step="0.1" placeholder="pl. 162.0" />
+      </div>
+      <div class="pm-field">
+        <label>Szélesség (mm)</label>
+        <input type="number" id="pmWidth" step="0.1" placeholder="pl. 77.0" />
+      </div>
+      <div class="pm-field">
+        <label>Vastagság (mm)</label>
+        <input type="number" id="pmThickness" step="0.1" placeholder="pl. 8.2" />
+      </div>
+    </div>
+
+    <div class="pm-section-title">Értékelés</div>
+    <div class="pm-row">
+      <div class="pm-field pm-wide">
+        <label>Előnyök (soronként 1 pont)</label>
+        <textarea id="pmPros" rows="4" placeholder="Kiemelkedő szenzorméret&#10;Jó sötétkép&#10;..."></textarea>
+      </div>
+      <div class="pm-field pm-wide">
+        <label>Hátrányok (soronként 1 pont)</label>
+        <textarea id="pmCons" rows="4" placeholder="Nincs zoom&#10;Nagy és nehéz&#10;..."></textarea>
+      </div>
+    </div>
+    <div class="pm-row">
+      <div class="pm-field pm-wide">
+        <label>Kinek ajánlott</label>
+        <textarea id="pmRecommendedFor" rows="2" placeholder="Akinek fontos a ..."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="phone-modal-footer">
+    <button id="pmDeleteBtn" class="btn-danger btn-sm hidden" onclick="App.deletePhone()">🗑 Törlés</button>
+    <div style="flex:1"></div>
+    <button class="btn-secondary btn-sm" onclick="App.closePhoneModal()">Mégse</button>
+    <button class="btn-primary btn-sm" onclick="App.savePhone()">💾 Mentés</button>
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
