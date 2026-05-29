@@ -4,7 +4,7 @@ App state persistence (favorites + winner) via a JSON file.
 import json
 from config import STATE_PATH
 
-_DEFAULT: dict = {"favorites": [], "winner": None}
+_DEFAULT: dict = {"excluded": [], "winner": None}
 
 
 def load_state() -> dict:

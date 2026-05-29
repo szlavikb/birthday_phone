@@ -11,7 +11,7 @@ const App = (() => {
     view: 'table',          // 'table' | 'cards' | 'compare'
     phones: [],
     descriptions: [],       // [{column_key, label, description}]
-    appState: { favorites: [], winner: null },
+    appState: { excluded: [], winner: null },
     compareSelected: [],    // max 3 phone ids
     sortCol: null,
     sortDir: 'asc',
@@ -23,16 +23,27 @@ const App = (() => {
      Bootstrap
   --------------------------------------------------------------- */
   async function init() {
-    const [phonesRes, descRes, stateRes] = await Promise.all([
-      fetch('/api/phones'),
-      fetch('/api/descriptions'),
-      fetch('/api/state'),
-    ]);
-    state.phones       = await phonesRes.json();
-    state.descriptions = await descRes.json();
-    state.appState     = await stateRes.json();
-    renderView();
-    updateWinnerBanner();
+    try {
+      const [phonesRes, descRes, stateRes] = await Promise.all([
+        fetch('/api/phones'),
+        fetch('/api/descriptions'),
+        fetch('/api/state'),
+      ]);
+      state.phones       = await phonesRes.json();
+      state.descriptions = await descRes.json();
+      state.appState     = await stateRes.json();
+      // Ensure excluded is always an array (backwards-compat)
+      if (!Array.isArray(state.appState.excluded)) state.appState.excluded = [];
+      renderView();
+      updateWinnerBanner();
+    } catch (err) {
+      document.getElementById('mainContent').innerHTML = `
+        <div class="compare-empty">
+          <div class="big-icon">⚠️</div>
+          <p>Nem sikerült betölteni az adatokat. Ellenőrizd, hogy fut-e a szerver!</p>
+          <button class="btn-primary" onclick="App.init()">Újrapróbálás</button>
+        </div>`;
+    }
   }
 
   /* ---------------------------------------------------------------
@@ -57,8 +68,8 @@ const App = (() => {
   /* ---------------------------------------------------------------
      Helpers
   --------------------------------------------------------------- */
-  function isFav(id)    { return state.appState.favorites.includes(String(id)); }
-  function isWinner(id) { return String(state.appState.winner) === String(id); }
+  function isExcluded(id) { return state.appState.excluded.includes(String(id)); }
+  function isWinner(id)   { return String(state.appState.winner) === String(id); }
 
   function descFor(key) {
     const d = state.descriptions.find(d => d.column_key === key);
@@ -118,9 +129,9 @@ const App = (() => {
 
     const bodyRows = sorted.map(p => {
       const winner  = isWinner(p.id);
-      const fav     = isFav(p.id);
+      const excl    = isExcluded(p.id);
       const isRef   = p.is_reference;
-      const rowCls  = [winner ? 'is-winner' : '', fav ? 'is-favorite' : ''].filter(Boolean).join(' ');
+      const rowCls  = [winner ? 'is-winner' : '', excl ? 'is-excluded' : ''].filter(Boolean).join(' ');
 
       const nameCell = `<td class="phone-name-cell" style="min-width:190px">
         ${winner ? '<span class="trophy-badge">🏆</span>' : ''}
@@ -187,13 +198,13 @@ const App = (() => {
 
     const cards = phones.map(p => {
       const winner = isWinner(p.id);
-      const fav    = isFav(p.id);
+      const excl   = isExcluded(p.id);
       const isRef  = p.is_reference;
       const imgSrc = imageMap[p.id];
 
       const badges = [
         winner ? '<span class="card-badge badge-winner">🏆 Nyertes</span>' : '',
-        fav    ? '<span class="card-badge badge-fav">♥ Kedvenc</span>'     : '',
+        excl   ? '<span class="card-badge badge-excluded">🚫 Kizárva</span>'  : '',
         isRef  ? '<span class="card-badge badge-ref">⚠️ Referencia</span>' : '',
       ].filter(Boolean).join('');
 
@@ -203,7 +214,7 @@ const App = (() => {
           ? `<div class="card-image-slot"><img src="${escHtml(imgSrc)}" alt="" /></div>`
           : `<div class="card-image-slot"><span class="no-img">📷</span></div>`;
 
-      return `<div class="phone-card ${winner ? 'is-winner' : ''}" onclick="App.openDrawer('${p.id}')">
+      return `<div class="phone-card ${winner ? 'is-winner' : ''} ${excl ? 'is-excluded' : ''}" onclick="App.openDrawer('${p.id}')">
         <div class="card-top">
           <div class="card-name">${escHtml(p.name)}</div>
           <div class="card-badges">${badges}</div>
@@ -298,7 +309,7 @@ const App = (() => {
 
   function buildCompareCol(p, images = [], bestMap = {}) {
     const winner = isWinner(p.id);
-    const fav    = isFav(p.id);
+    const excl   = isExcluded(p.id);
     const isRef  = p.is_reference;
 
     const specs = [
@@ -354,9 +365,9 @@ const App = (() => {
       ? `<button class="btn-icon ${winner ? 'active' : ''}" title="${winner ? 'Nyertes törlése' : 'Nyertessé tenni'}"
            onclick="App.toggleWinner('${p.id}', event)">🏆</button>`
       : '';
-    const favBtn = !isRef
-      ? `<button class="btn-icon ${fav ? 'fav-active' : ''}" title="${fav ? 'Kedvencből eltávolít' : 'Kedvencekhez adja'}"
-           onclick="App.toggleFavorite('${p.id}', event)">♥</button>`
+    const exclBtn = !isRef
+      ? `<button class="btn-icon ${excl ? 'excl-active' : ''}" title="${excl ? 'Kizárás megszüntetése' : 'Kizárja a listából'}"
+           onclick="App.toggleExclude('${p.id}', event)">🚫</button>`
       : '';
 
     // Gallery HTML
@@ -387,13 +398,13 @@ const App = (() => {
         <div class="compare-col-header">
           <div class="compare-col-name">${escHtml(p.name)}</div>
           ${p.price ? `<div class="compare-col-price">${escHtml(p.price)}</div>` : ''}
-          ${winner || fav || isRef ? `<div class="compare-col-badges">
+          ${winner || excl || isRef ? `<div class="compare-col-badges">
             ${winner ? '<span class="card-badge badge-winner">🏆 Nyertes</span>' : ''}
-            ${fav    ? '<span class="card-badge badge-fav">♥ Kedvenc</span>'     : ''}
+            ${excl   ? '<span class="card-badge badge-excluded">🚫 Kizárva</span>'  : ''}
             ${isRef  ? '<span class="ref-badge">⚠️ Referencia</span>'           : ''}
           </div>` : ''}
           <div class="compare-col-actions">
-            ${winnerBtn}${favBtn}
+            ${winnerBtn}${exclBtn}
             <button class="btn-icon" title="Részletek" onclick="App.openDrawer('${p.id}', event)">🔍</button>
           </div>
         </div>
@@ -415,10 +426,10 @@ const App = (() => {
     if (!bar || !chips) return;
 
     chips.innerHTML = state.phones.map(p => {
-      const sel = state.compareSelected.includes(String(p.id));
-      const fav = isFav(p.id);
-      return `<button class="chip ${sel ? 'selected' : ''} ${fav ? 'chip-fav' : ''}" onclick="App.toggleCompareSelect('${p.id}')">
-        ${fav ? '<span class="chip-fav-dot">♥</span>' : ''}${escHtml(p.name)}
+      const sel  = state.compareSelected.includes(String(p.id));
+      const excl = isExcluded(p.id);
+      return `<button class="chip ${sel ? 'selected' : ''} ${excl ? 'chip-excluded' : ''}" onclick="App.toggleCompareSelect('${p.id}')">
+        ${escHtml(p.name)}
         ${sel ? '<span class="chip-remove">✕</span>' : ''}
       </button>`;
     }).join('');
@@ -493,9 +504,10 @@ const App = (() => {
       thickness:   _scoreThickness,
     };
     const best = {};
+    const active = phones.filter(p => !isExcluded(p.id));
     for (const [field, scorer] of Object.entries(SCORERS)) {
       let topScore = -Infinity, topId = null, tie = false;
-      for (const p of phones) {
+      for (const p of active) {
         const s = scorer(p[field]);
         if (s > topScore) { topScore = s; topId = String(p.id); tie = false; }
         else if (s === topScore && topScore > -Infinity) { tie = true; }
@@ -535,7 +547,7 @@ const App = (() => {
 
     const isRef  = phone.is_reference;
     const winner = isWinner(phone.id);
-    const fav    = isFav(phone.id);
+    const excl   = isExcluded(phone.id);
 
     // Header
     document.getElementById('drawerTitle').innerHTML = `
@@ -546,8 +558,8 @@ const App = (() => {
     const actions = !isRef ? `
       <button class="btn-icon ${winner ? 'active' : ''}" title="${winner ? 'Nyertes törlése' : 'Nyertessé tenni'}"
         onclick="App.toggleWinner('${phone.id}')">🏆</button>
-      <button class="btn-icon ${fav ? 'fav-active' : ''}" title="${fav ? 'Kedvencből eltávolít' : 'Kedvencekhez'}"
-        onclick="App.toggleFavorite('${phone.id}')">♥</button>
+      <button class="btn-icon ${excl ? 'excl-active' : ''}" title="${excl ? 'Kizárás megszüntetése' : 'Kizárja a listából'}"
+        onclick="App.toggleExclude('${phone.id}')">🚫</button>
       <button class="btn-icon" title="Szerkesztés" onclick="App.openPhoneModal('${phone.id}')">✏️</button>
     ` : '<span class="ref-badge">⚠️ Referencia</span>';
     document.getElementById('drawerActions').innerHTML = actions;
@@ -716,21 +728,20 @@ const App = (() => {
   /* ---------------------------------------------------------------
      FAVORITES & WINNER
   --------------------------------------------------------------- */
-  async function toggleFavorite(id, event) {
+  async function toggleExclude(id, event) {
     if (event) event.stopPropagation();
     const sid = String(id);
-    const favs = state.appState.favorites.map(String);
-    const idx = favs.indexOf(sid);
-    if (idx >= 0) favs.splice(idx, 1);
-    else favs.push(sid);
-    state.appState.favorites = favs;
+    const excl = state.appState.excluded.map(String);
+    const idx = excl.indexOf(sid);
+    if (idx >= 0) excl.splice(idx, 1);
+    else excl.push(sid);
+    state.appState.excluded = excl;
     await fetch('/api/state', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ favorites: favs }),
+      body: JSON.stringify({ excluded: excl }),
     });
     renderView();
-    // Re-render drawer actions if open
     if (state.drawerPhoneId === sid) openDrawer(sid);
   }
 
@@ -939,9 +950,9 @@ const App = (() => {
     if (!res.ok) { alert('Törlési hiba!'); return; }
 
     state.phones = state.phones.filter(p => String(p.id) !== String(id));
-    // Remove from compare/favorites/winner if present
+    // Remove from compare/excluded/winner if present
     state.compareSelected = state.compareSelected.filter(x => x !== String(id));
-    state.appState.favorites = state.appState.favorites.filter(x => x !== String(id));
+    state.appState.excluded = state.appState.excluded.filter(x => x !== String(id));
     if (String(state.appState.winner) === String(id)) {
       state.appState.winner = null;
       await fetch('/api/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ winner: null }) });
@@ -960,7 +971,7 @@ const App = (() => {
     setView,
     openDrawer,
     closeDrawer,
-    toggleFavorite,
+    toggleExclude,
     toggleWinner,
     clearWinner,
     clearCompareSelection,

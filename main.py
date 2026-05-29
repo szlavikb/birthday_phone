@@ -121,8 +121,8 @@ def api_get_state():
 def api_post_state():
     data  = request.get_json(force=True)
     state = load_state()
-    if "favorites" in data:
-        state["favorites"] = data["favorites"]
+    if "excluded" in data:
+        state["excluded"] = data["excluded"]
     if "winner" in data:
         state["winner"] = data["winner"]
     save_state(state)

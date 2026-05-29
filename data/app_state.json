@@ -1,4 +1,6 @@
 {
-  "favorites": [],
+  "excluded": [
+    "12"
+  ],
   "winner": null
 }

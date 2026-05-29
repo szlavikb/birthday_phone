@@ -185,9 +185,7 @@ button { cursor: pointer; border: none; font-family: inherit; font-size: inherit
 }
 .chip .chip-remove { color: var(--muted); font-size: 11px; margin-left: 2px; }
 .chip.selected .chip-remove { color: var(--red); }
-.chip-fav-dot { color: var(--red, #e05c6c); font-size: 11px; }
-.chip.chip-fav { border-color: rgba(224, 92, 108, .4); }
-.chip.chip-fav:hover { border-color: rgba(224, 92, 108, .7); }
+.chip-excluded { border-color: rgba(90,96,122,.5); opacity: 0.6; }
 
 /* ---------- Main Content ---------- */
 .main-content {
@@ -287,12 +285,8 @@ tbody tr {
 tbody tr:hover { background: var(--bg-card-hover); }
 tbody tr.is-winner { background: rgba(245,200,66,.06); }
 tbody tr.is-winner td:first-child { border-left: 3px solid var(--gold); }
-tbody tr.is-favorite td:first-child::before {
-  content: '♥';
-  color: var(--red);
-  margin-right: 6px;
-  font-size: 12px;
-}
+tbody tr.is-excluded { opacity: 0.38; filter: grayscale(40%); }
+tbody tr.is-excluded:hover { opacity: 0.55; }
 tbody td {
   padding: 11px 14px;
   color: var(--text-primary);
@@ -355,6 +349,11 @@ tbody td.phone-name-cell {
   border-color: var(--gold);
   box-shadow: 0 0 0 1px var(--gold), 0 8px 32px var(--gold-glow);
 }
+.phone-card.is-excluded {
+  opacity: 0.38;
+  filter: grayscale(40%);
+}
+.phone-card.is-excluded:hover { opacity: 0.55; }
 .card-top {
   display: flex;
   align-items: flex-start;
@@ -374,9 +373,9 @@ tbody td.phone-name-cell {
   font-size: 10px;
   font-weight: 600;
 }
-.badge-winner { background: rgba(245,200,66,.15); color: var(--gold); border: 1px solid rgba(245,200,66,.4); }
-.badge-fav    { background: rgba(255,77,106,.12); color: var(--red);  border: 1px solid rgba(255,77,106,.3); }
-.badge-ref    { background: rgba(90,96,122,.15); color: var(--muted); border: 1px solid var(--border); }
+.badge-winner   { background: rgba(245,200,66,.15); color: var(--gold); border: 1px solid rgba(245,200,66,.4); }
+.badge-excluded { background: rgba(90,96,122,.18);  color: var(--muted); border: 1px solid var(--border); }
+.badge-ref      { background: rgba(90,96,122,.15); color: var(--muted); border: 1px solid var(--border); }
 
 .card-image-slot {
   height: 120px;
@@ -764,7 +763,7 @@ tbody td.phone-name-cell {
 }
 .btn-icon:hover { background: var(--bg-card-hover); transform: scale(1.1); }
 .btn-icon.active { color: var(--gold); }
-.btn-icon.fav-active { color: var(--red); }
+.btn-icon.excl-active { color: var(--muted); opacity: 0.7; }
 
 /* ===================================================================
    COLUMN DESCRIPTION MODAL
