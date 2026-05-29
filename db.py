@@ -47,7 +47,9 @@ def init_db() -> None:
     DATA_DIR.mkdir(exist_ok=True)
     with get_db() as conn:
         _create_tables(conn)
+        _migrate_schema(conn)
         _seed_descriptions(conn)
+        _ensure_descriptions(conn)
 
 
 def _create_tables(conn: sqlite3.Connection) -> None:
@@ -62,6 +64,9 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             ois             INTEGER DEFAULT 0,
             max_zoom        TEXT,
             max_video       TEXT,
+            selfie_megapixel INTEGER,
+            selfie_aperture  TEXT,
+            selfie_max_video TEXT,
             storage         TEXT,
             height          REAL,
             width           REAL,
@@ -81,6 +86,32 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             description TEXT NOT NULL
         );
     """)
+
+
+def _migrate_schema(conn: sqlite3.Connection) -> None:
+    """Add new columns to existing databases."""
+    existing = {row[1] for row in conn.execute("PRAGMA table_info(phones)").fetchall()}
+    for col, typ in [
+        ("selfie_megapixel", "INTEGER"),
+        ("selfie_aperture",  "TEXT"),
+        ("selfie_max_video", "TEXT"),
+    ]:
+        if col not in existing:
+            conn.execute(f"ALTER TABLE phones ADD COLUMN {col} {typ}")
+
+
+def _ensure_descriptions(conn: sqlite3.Connection) -> None:
+    """Insert any new default descriptions that are not yet in the DB."""
+    existing = {
+        row[0]
+        for row in conn.execute("SELECT column_key FROM column_descriptions").fetchall()
+    }
+    for key, label, desc in DEFAULT_DESCRIPTIONS:
+        if key not in existing:
+            conn.execute(
+                "INSERT INTO column_descriptions(column_key, label, description) VALUES (?,?,?)",
+                (key, label, desc),
+            )
 
 
 def _seed_descriptions(conn: sqlite3.Connection) -> None:
@@ -132,8 +163,9 @@ def db_create_phone(data: dict) -> dict:
         cursor = conn.execute(
             """INSERT INTO phones
                (name, price, battery, sensor_size, aperture, ois, max_zoom,
-                max_video, storage, height, width, thickness, link, recommended_for)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                max_video, selfie_megapixel, selfie_aperture, selfie_max_video,
+                storage, height, width, thickness, link, recommended_for)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             _phone_params(data, existing=None),
         )
         phone_id = cursor.lastrowid
@@ -151,7 +183,8 @@ def db_update_phone(phone_id: int, data: dict) -> dict | None:
         conn.execute(
             """UPDATE phones SET
                name=?, price=?, battery=?, sensor_size=?, aperture=?, ois=?,
-               max_zoom=?, max_video=?, storage=?, height=?, width=?, thickness=?,
+               max_zoom=?, max_video=?, selfie_megapixel=?, selfie_aperture=?,
+               selfie_max_video=?, storage=?, height=?, width=?, thickness=?,
                link=?, recommended_for=?
                WHERE id=?""",
             (*_phone_params(data, existing=existing), phone_id),
@@ -198,11 +231,22 @@ def _replace_pro_con(conn: sqlite3.Connection, phone_id: int, pros: list, cons: 
 
 
 def _phone_params(data: dict, existing: sqlite3.Row | None) -> tuple:
-    """Build the 14-value tuple for INSERT/UPDATE from request data.
+    """Build the 17-value tuple for INSERT/UPDATE from request data.
     Falls back to existing row values when a key is missing (for UPDATE).
     """
     def get(key, default=""):
         return data.get(key, _row(existing)[key] if existing else default)
+
+    selfie_mp = data.get("selfie_megapixel")
+    if selfie_mp is None and existing is not None:
+        selfie_mp = existing["selfie_megapixel"]
+    elif selfie_mp is not None and selfie_mp != "":
+        try:
+            selfie_mp = int(selfie_mp)
+        except (ValueError, TypeError):
+            selfie_mp = None
+    else:
+        selfie_mp = None
 
     return (
         (data.get("name") or "").strip() or (existing["name"] if existing else ""),
@@ -213,6 +257,9 @@ def _phone_params(data: dict, existing: sqlite3.Row | None) -> tuple:
         1 if data.get("ois") else 0,
         get("max_zoom"),
         get("max_video"),
+        selfie_mp,
+        get("selfie_aperture"),
+        get("selfie_max_video"),
         get("storage"),
         _to_float(str(data["height"])) if data.get("height") else None,
         _to_float(str(data["width"]))  if data.get("width")  else None,

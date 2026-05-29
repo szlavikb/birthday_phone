@@ -1,54 +1,203 @@
+# Forrás: GSMArena reviews, Digital Camera World, Amateur Photographer, 9to5Google
+# Utoljára frissítve: 2026-05
+
 - modell: "Samsung Galaxy S24 FE"
-  pro: ["3× valódi optikai zoom dedikált teleobiektívvel – ritka ebben az árkategóriában", "OIS főkamerán és teleobiektíven is", "8K videó felvétel támogatott", "Dual Pixel PDAF – gyors és megbízható fókusz", "Galaxy AI funkciók (objektum eltávolítás, generatív szerkesztés)"]
-  kontra: ["Főkamera szenzormérete (1/1.56\") nem kiemelkedő az árkategóriában", "Előlapi kamera csak 10 MP, nincs AF", "Ultraszéles kamera fix fókuszú, makrózásra alkalmatlan", "Telefotó csak 8 MP (képek 12 MP-re upscale-elve)"]
-  kinek_ajanlott: "Akinek fontos a zoom és a megbízható videó, és szívesen fizet a Samsung ökoszisztémáért."
+  pro:
+    - "3× valódi optikai zoom dedikált teleobiektívvel (8 MP, OmniVision OV08A10) – ritka ebben az árkategóriában [GSMArena review, 2024-10]"
+    - "Dual Pixel PDAF a főkamerán – gyors és megbízható fókusz még mozgó tárgyaknál is"
+    - "8K@30fps videó a főkamerával – kevés középkategóriás telefon tudja"
+    - "Galaxy AI funkciók (objektum eltávolítás, generatív szerkesztés) + 7 év szoftverfrissítési garancia"
+    - "IP68 vízállóság, Gorilla Glass Victus+ elöl-hátul"
+  kontra:
+    - "Főkamera szenzormérete 1/1.57\" – ugyanaz a Samsung ISOCELL GN3 szenzor, mint a Galaxy S22-ben, nem friss hardver [GSMArena]"
+    - "Telefotó csak 8 MP (1/4.4\" OmniVision OV08A10) – sötétben és nagy cropnál gyenge, 12 MP-re upscale-elve jelenik meg"
+    - "Selfie kamera 10 MP, nincs AF – az összes közvetlen versenytárs jobb előlapot hoz ezen az áron"
+    - "Ultraszéles 12 MP, fix fókusz, sötétben zajos – Night mode sokat segít, de mesterséges élezés látható nagyításnál [GSMArena]"
+    - "25W vezetékes töltés – lassú a mezőnyhöz képest (Xiaomi 67–90W, Motorola 68W)"
+  kinek_ajanlott: "Akinek fontos a zoom, a megbízható videó és a Samsung ökoszisztéma (Galaxy AI, One UI, hosszú frissítési támogatás), és nem zavarja a nem friss kamerahardver."
 
 - modell: "Redmi Note 15 Pro 5G"
-  pro: ["Kiemelkedően nagy szenzor: 1/1.4\" – messze a legjobb sötétben ebben az árkategóriában", "200 MP sensor → pixel binning után rendkívül részletes 50 MP képek", "OIS a főkamerán", "f/1.7 rekesz – jó fénygyűjtés"]
-  kontra: ["Nincs dedikált teleobiektív – optikai zoom nincs", "Ultraszéles kamera csak 8 MP, fix fókuszú, és csak 1080p videót rögzít", "Videó max. 4K@30fps – nincs 60fps 4K", "Az előlapi kamera (20 MP) gyengébb mint a Pro+ változatnál"]
-  kinek_ajanlott: "Fényképezésre fókuszáló felhasználóknak, akik főleg 1× zoom mellett fotóznak és sötétben is jó képet akarnak."
+  pro:
+    - "1/1.4\" főkamera szenzor – a lista legnagyobb szenzora, messze a legjobb sötétkép-teljesítmény ebben az árkategóriában"
+    - "200 MP → 50 MP pixel binning: rendkívül részletes képek jó fényben"
+    - "OIS + f/1.7 rekesz a főkamerán – stabil, fényes kombináció"
+    - "Vékony váz (8,0 mm) a listán belüli egyik legkompaktabb opció"
+  kontra:
+    - "Nincs dedikált teleobiektív – optikai zoom hiányzik, csak digitális crop elérhető"
+    - "Ultraszéles csak 8 MP, fix fókusz, 1080p videó – gyenge láncszem a rendszerben"
+    - "Főkamera max. 4K@30fps – nincs 4K@60fps, ellentétben a POCO X8 Pro-val és a Xiaomi 15T-vel"
+    - "20 MP selfie kamera (f/2.2) – gyengébb mint a Pro+ változat 32 MP-es előlapja"
+    - "MediaTek Dimensity 7300 Ultra chip – képfeldolgozásban elmarad a Snapdragon 7s Gen 3-tól (Pro+)"
+  kinek_ajanlott: "Fényképezésre fókuszáló felhasználóknak, akik főleg 1× zoom mellett fotóznak és sötétben is kiemelkedő képet akarnak a lehető legolcsóbban."
 
-- modell: "Redmi Note 15 Pro+ 5G (Mokkabarna)"
-  pro: ["Ugyanolyan 1/1.4\" szenzor mint a Pro 5G, de Snapdragon chippel – jobb képfeldolgozás", "f/1.7 rekesz + OIS", "32 MP előlapi kamera (vs. 20 MP a sima Pro-n) – jelentős selfie előny", "Pixel binning: 200 MP → részletgazdag 50 MP végeredmény"]
-  kontra: ["Ugyanúgy nincs dedikált teleobiektív", "Videó max. 4K@30fps", "Mokkabarna színben a vastagság 8,47 mm (többi szín 8,19 mm)", "Ultraszéles kamera korlátozott (8 MP, fix fókusz)"]
-  kinek_ajanlott: "Aki a Pro 5G-t választaná, de fontosak a jobb selfiek és erősebb processzor."
+- modell: "Redmi Note 15 Pro+ 5G"
+  pro:
+    - "Ugyanolyan 1/1.4\" szenzor mint a sima Pro, de Snapdragon 7s Gen 3 chippel – gyorsabb képfeldolgozás és AI"
+    - "32 MP előlapi kamera (f/2.2) – jelentős selfie előny a 20 MP-es Pro-val szemben"
+    - "OIS + f/1.7 rekesz a főkamerán"
+    - "200 MP → 50 MP pixel binning: részletgazdag végeredmény"
+  kontra:
+    - "Nincs dedikált teleobiektív – ugyanúgy csak digitális zoom, mint a sima Pro-n"
+    - "Főkamera max. 4K@30fps – nincs 60fps"
+    - "Ultraszéles kamera korlátozott: 8 MP, fix fókusz, csak 1080p videó"
+    - "Mokkabarna színben a vastagság 8,47 mm (többi szín: 8,19 mm) – érdemes figyelni rendelésnél"
+    - "30 Ft-tal sem olcsóbb 30 ezer forinttal drágább a Pro-nál, de kamera szempontból csak selfiben és chipben különbözik"
+  kinek_ajanlott: "Aki a Pro 5G-t választaná, de fontosak a jobb selfiek és az erősebb processzor, és megéri a ~30 ezer Ft-os felárat."
 
 - modell: "POCO X8 Pro"
-  pro: ["f/1.5 – a lista legtágabb rekesszel rendelkező telefonja, legjobb fénygyűjtés sötétben", "Sony IMX882 szenzor – minőségi gyártó, 1/1.95\"", "OIS a főkamerán", "4K@60fps videó – az egyetlen ezen az áron a listán, ami ezt hozza", "960fps slow motion"]
-  kontra: ["Nincs teleobiektív – zoom csak digitálisan", "Ultraszéles kamera csak 8 MP, nincs AF", "Előlapi kamera 20 MP, 1080p@60fps – átlagos", "Szenzorméret (1/1.95\") kisebb mint a Redmi Note 15 Pro szériánál"]
-  kinek_ajanlott: "Akinek prioritás a sötétkép és a gördülékeny videó, és nem hiányzik a zoom."
+  pro:
+    - "f/1.5 rekesz – a lista legtágabb rekesznyílása, legjobb fénygyűjtés sötétben"
+    - "Sony IMX882 szenzor (1/1.95\") – minőségi gyártó, megbízható teljesítmény"
+    - "4K@60fps videó + 960fps slow motion – ebben az árkategóriában kiemelkedő videóképesség [GSMArena]"
+    - "OIS a főkamerán"
+    - "6500 mAh akku + 67W töltés – kiemelkedő akkumulátor/ár arány"
+  kontra:
+    - "Nincs teleobiektív – zoom csak digitálisan, optikai zoom hiányzik"
+    - "Szenzorméret (1/1.95\") jóval kisebb mint a Redmi Note 15 Pro széria 1/1.4\"-je – sötétben ennek megfelelően gyengébb"
+    - "Ultraszéles csak 8 MP, nincs AF – makrózásra alkalmatlan"
+    - "Selfie kamera 20 MP, 1080p@60fps – átlagos a mezőnyben"
+    - "MIUI/HyperOS reklámokkal és bloatware-rel – rendszertisztítást igényel"
+  kinek_ajanlott: "Akinek prioritás a sötétkép, a gördülékeny 4K videó és a nagy akku, és nem hiányzik az optikai zoom."
 
 - modell: "Motorola Edge 60 Pro"
-  pro: ["Háromkamerás rendszer: főkamera + teleobiektív (3×) + ultraszéles – teljes lefedettség", "Sony LYT-700C szenzor, 1/1.56\"", "OIS főkamerán és teleobiektíven is", "50 MP ultraszéles AF-fel – ritkaság, makrózásra is alkalmas", "50 MP előlapi kamera 4K videóval", "Pantone Validated színkalibrálás", "IP68/IP69 vízállóság"]
-  kontra: ["Teleobiektív csak 3×, és szenzora kisebb (10 MP)", "4K csak @30fps a hátlapi kamerán", "Ultraszéles rekesz f/2.0 – sötétben gyengébb"]
-  kinek_ajanlott: "Sokoldalú fotós, akinek kell zoom, wide és jó selfie egyszerre, és nem kompromisszumot keres."
+  pro:
+    - "Háromkamerás rendszer főkamera + 3× teleobiektív + ultraszéles AF-fel – ritkaság az árkategóriában [GSMArena]"
+    - "Sony LYT-700C szenzor (1/1.56\"), OIS, f/1.8 a főkamerán"
+    - "50 MP ultraszéles AF-fel – makrózásra is alkalmas, egyedülálló a listán ebben az árban"
+    - "50 MP selfie kamera 4K@60fps videóval – a lista legjobb előlapi kamerája"
+    - "IP68 + IP69 vízállóság, Pantone Validated színkalibrálás"
+  kontra:
+    - "Teleobiektív szenzora kicsi (10 MP) és f/2.0 rekeszű – sötétben 3× zoomon láthatóan romlik a minőség"
+    - "Főkamera max. 4K@30fps – nincs 60fps, ellentétben a POCO X8 Pro-val"
+    - "Ultraszéles rekesz f/2.0 – sötétben gyengébb mint a főkamera"
+    - "Exynos 1580 chip – képfeldolgozásban gyengébb mint a Snapdragon alapú versenytársak"
+  kinek_ajanlott: "Sokoldalú fotós, akinek kell zoom, széleslátószög AF-fel és kiemelkedő selfie egyszerre – aki nem kompromisszumot keres, hanem teljes rendszert."
 
 - modell: "Motorola Edge 60 Fusion"
-  pro: ["Sony LYT-700C szenzor, 1/1.56\" – ugyanaz mint az Edge 60 Pro főkamerája", "OIS + f/1.88 – stabil, jó sötétteljesítmény", "Ultraszéles kamerán AF van – makrózásra is alkalmas", "4K videó az összes kamerával (beleértve selfie)", "IP68/IP69 vízállóság – olcsóbb áron mint a Pro"]
-  kontra: ["Nincs teleobiektív – optikai zoom nincs", "Max. 4K@30fps – nincs 60fps", "Ultraszéles csak 13 MP", "Előlapi kamera 32 MP, de kisebb szenzor (1/3.14\")"]
-  kinek_ajanlott: "Aki Edge 60 Pro minőségű főkamerát akar olcsóbban, és lemond a zoomról."
+  pro:
+    - "Sony LYT-700C szenzor (1/1.56\") – ugyanaz mint az Edge 60 Pro főkamerája, kisebb áron"
+    - "OIS + f/1.88 – stabil, jó sötétteljesítmény"
+    - "Ultraszéles kamerán AF van – makrózásra is alkalmas, ritka ebben az árban"
+    - "IP68 + IP69 vízállóság – a listán az egyik legjobb védelmi besorolás"
+    - "32 MP selfie kamera 4K@30fps videóval"
+  kontra:
+    - "Nincs teleobiektív – optikai zoom hiányzik, csak digitális crop"
+    - "Főkamera max. 4K@30fps – nincs 60fps"
+    - "Ultraszéles csak 13 MP, f/2.4 rekesz – sötétben gyenge"
+    - "Selfie szenzor kicsi (1/3.14\") a 32 MP ellenére – portréknál hamar megjelenik a zaj"
+    - "5200 mAh akku – a lista egyik legkisebb akkumulátora"
+  kinek_ajanlott: "Aki Edge 60 Pro minőségű főkamerát és AF-es ultraszélest akar kisebb áron, és lemond az optikai zoomról és a nagy akkumulátorról."
 
 - modell: "Xiaomi 15T"
-  pro: ["Leica color science – képfeldolgozás minőségibb, mint az árból következne", "OmniVision OV50 szenzor, 1/1.55\", OIS", "2× valódi optikai zoom teleobiektívvel (50 MP)", "4K@60fps videó", "32 MP selfie kamera, 4K videóval", "Leica szűrők és stílusok"]
-  kontra: ["Teleobiektív csak 2× – szűkebb zoom mint a 15T Pro 5×-e", "Telefotón nincs OIS – kézremegés 2× zoomon érzékelhető", "Ultraszéles kamera csak 12 MP, fix fókusz, sötétben gyengébb", "Szenzormérete (1/1.55\") nem kiemelkedő"]
-  kinek_ajanlott: "Aki Leica minőségű képeket akar megfizethető áron, de nem feltétlenül kell messzire zoomolni."
+  pro:
+    - "Leica color science és szűrők – a képfeldolgozás minőségibb mint az árból következne [Digital Camera World]"
+    - "OmniVision OV50 szenzor (1/1.55\"), OIS, f/1.7 a főkamerán"
+    - "2× valódi optikai zoom teleobiektívvel (50 MP) – dedikált tele ritkán jön ilyen áron"
+    - "4K@60fps főkamerával + 4K selfie kamerával – teljes videóképesség"
+    - "32 MP selfie kamera 4K videóval"
+    - "Leica szűrők és stílusok közvetlenül a kameraappban"
+  kontra:
+    - "Teleobiektívn nincs OIS – kézremegés 2× zoomon érzékelhető, főleg videónál"
+    - "Teleobiektív csak 2× – a Xiaomi 15T Pro 5×-e és a Xiaomi 17T 5×-e messze meghaladja"
+    - "Ultraszéles kamera csak 12 MP, fix fókusz – makrózásra nem alkalmas, sötétben gyengébb"
+    - "Szenzorméret (1/1.55\") nem kiemelkedő – a Redmi Note 15 Pro széria 1/1.4\"-je jobb sötétteljesítményt ad"
+  kinek_ajanlott: "Aki Leica minőségű képfeldolgozást akar megfizethető áron, nappal és 1-2× zoomon fotóz, és értékeli a 4K@60fps videót."
 
 - modell: "Xiaomi 15T Pro"
-  pro: ["A lista legjobb kamerarendszere összességében", "1/1.3\" szenzor – legnagyobb ebben a mezőnyben, legjobb sötétteljesítmény", "f/1.6 rekesz – második legnyitottabb a listán (POCO X8 Pro f/1.5 után)", "5× optikai zoom (50 MP, 115mm, OIS) – messze legjobb zoom a listán", "8K@30fps + 4K@120fps videó – prémium videóképességek", "Leica VARIO-SUMMILUX objektív", "OIS mindkét tele és főkamerán"]
-  kontra: ["Ultraszéles csak 12 MP, fix fókusz – az egyetlen gyenge láncszem", "Teleobiektív rekesz f/3.0 – sötétben korlátozott zoomon", "Drágább mint a 15T", "90W töltés van, de vezeték nélküli 50W-os"]
-  kinek_ajanlott: "Aki a legjobb kamerát akarja ebből a listából, és kell a zoom, a videó minőség és a Leica feldolgozás."
+  pro:
+    - "1/1.3\" főkamera szenzor – a lista legnagyobb szenzora, legjobb sötétteljesítmény [GSMArena review]"
+    - "f/1.6 rekesz – a lista második legnyitottabb rekesznyílása"
+    - "5× optikai zoom (50 MP, 115mm, OIS) – messze a legjobb zoom a listán [Digital Camera World]"
+    - "8K@30fps + 4K@120fps videó – egyedülálló videóképességek ebben a mezőnyben"
+    - "Leica VARIO-SUMMILUX objektív, OIS főkamerán és teleobiektíven egyaránt"
+  kontra:
+    - "Ultraszéles csak 12 MP, fix fókusz – az egyetlen gyenge láncszem a rendszerben"
+    - "Teleobiektív rekesz f/3.0 – sötétben 5× zoomon korlátozott"
+    - "256 GB tárhely az árkategóriában – a Xiaomi 15T 512 GB-ot ad kevesebb pénzért"
+    - "90W töltés van, de nincs 120W+ mint néhány kínai versenytársnál"
+  kinek_ajanlott: "Aki a legjobb kamerát akarja ebből a listából: kell a prémium zoom, a 4K@120fps videó és a Leica feldolgozás, és ehhez megfizetni a felárat."
+
+- modell: "Xiaomi 17T"
+  pro:
+    - "5× optikai zoom (50 MP, OIS) – az egyetlen nem Pro modell a listán ilyen hosszú zoommal [GSMArena review, 2026]"
+    - "OmniVision Light Fusion 900 szenzor (1/1.55\"), OIS, f/1.7 – ugyanaz mint a 15T főkamerája"
+    - "4K@60fps főkamerával és teleobiektívvel egyaránt [GSMArena]"
+    - "6500 mAh akku Si/C technológiával – kiemelkedő akkumulátor-tartam [GSMArena verdict]"
+    - "Kompaktabb váz (157,6 mm) mint a 15T Pro – könnyebb egykezes használat"
+    - "IP68 vízállóság, Gorilla Glass 7i"
+  kontra:
+    - "Szenzorméret (1/1.55\") kisebb mint a 15T Pro 1/1.3\"-je – sötétteljesítményben elmarad"
+    - "Nincs Leica feldolgozás – a 15T-hez és 15T Pro-hoz képest visszalépés képminőségben [Expert Reviews]"
+    - "Ultraszéles csak 12 MP, fix fókusz – makrózásra alkalmatlan, sötétben gyengébb"
+    - "MediaTek Dimensity 8500 Ultra chip – teljesítményben elmarad a 15T Pro Dimensity 9400+-jától"
+    - "Drágább mint a 15T Pro (229 990 Ft), miközben fő kamerában nem hozza azt a szintet"
+  kinek_ajanlott: "Aki kiemelkedő 5× zoomot és nagy akkumulátort akar egy kompaktabb, de nem Pro-szintű kamerarendszerben – és nem ragaszkodik a Leica feldolgozáshoz."
 
 - modell: "Google Pixel 9a (Obszidián)"
-  pro: ["Tensor G4 AI feldolgozás – a legjobb számítási fotográfia (Best Take, Magic Eraser, Photo Unblur, Night Sight)", "4K@60fps mindkét kamerával", "Ultraszéles kamerán AF van – makrózásra is alkalmas", "OIS főkamerán", "Kompakt méret (154,7 mm) kényelmes egykezes használathoz", "Szoftver-szinten a legjobb videostabilizáció", "Garantált 7 év Android frissítés"]
-  kontra: ["Legkisebb főkamera szenzor a listán: 1/2\" – sötétben a leggyengébb hardverből indul", "Nincs teleobiektív – csak digitális zoom, max 8×", "48 MP főkamera – alacsonyabb mint a konkurencia többségénél", "Előlapi kamera csak 13 MP", "Nincs Pro/manuális mód"]
-  kinek_ajanlott: "Aki Google AI funkciókat, tiszta szoftvert és hosszú támogatást akar, és nappal fotóz főleg. Zoomhoz nem ideális."
+  pro:
+    - "Tensor G4 AI feldolgozás – Best Take, Magic Eraser, Photo Unblur, Night Sight: a legjobb számítási fotográfia a listán [GSMArena review, 2025]"
+    - "4K@60fps főkamerával és selfie kamerával egyaránt"
+    - "Ultraszéles kamerán AF van – makrózásra is alkalmas [GSMArena]"
+    - "OIS a főkamerán, kiemelkedő szoftver-szintű videostabilizáció"
+    - "Kompakt méret (154,7 mm) – a lista legkisebb telefonja, kényelmes egykezes használat"
+    - "7 év Android OS + biztonsági frissítési garancia [androidfaithful.com]"
+    - "IP68 vízállóság"
+  kontra:
+    - "1/2.0\" főkamera szenzor – a lista legkisebb szenzora, hardveres sötétteljesítményben a leggyengébb kiindulópont [GSMArena]"
+    - "Nincs teleobiektív – csak digitális zoom, max. 8×"
+    - "48 MP főkamera – alacsonyabb felbontás mint a legtöbb versenytársnál"
+    - "Selfie kamera csak 13 MP, fix fókusz – a lista leggyengébb előlapi kamerája"
+    - "Csak 23W vezetékes töltés – az összes versenytárs gyorsabb töltést ad [GSMArena labs]"
+    - "8 GB RAM – az AI funkciók egy részénél szűk keresztmetszet [GSMArena performance]"
+  kinek_ajanlott: "Aki Google AI funkciókat, tiszta szoftvert, kompakt méretet és a leghosszabb frissítési garanciát akarja – és főleg nappal fotóz, zoomot nem használ intenzíven."
 
 - modell: "OPPO Reno15 FS"
-  pro: ["Sony LYT-600 szenzor, 1/1.95\", OIS, f/1.8 – megbízható alap", "50 MP előlapi kamera AF-fel – kiemelkedő selfie teljesítmény", "4K@30fps videó", "IP68/IP69 vízállóság", "ColorOS funkciók (AI törlés, égbolt szerkesztés stb.)"]
-  kontra: ["Nincs teleobiektív – csak digitális zoom", "Makró kamera 2 MP – gyakorlatilag haszontalan, pusztán marketing", "4K max @30fps – nincs 60fps", "Ultraszéles csak 8 MP, nincs AF", "Snapdragon 6 Gen 1 – közepes teljesítmény, képfeldolgozás lassabb erős versenytársakhoz képest"]
-  kinek_ajanlott: "Akinek fontosak a selfiek és a megbízható nappali fotók, és nem kell zoom vagy prémium videó."
+  pro:
+    - "Sony LYT-600 szenzor (1/1.95\"), OIS, f/1.8 – megbízható alapteljesítmény"
+    - "50 MP selfie kamera AF-fel – az előlapi kamera az egyik legjobb a listán"
+    - "512 GB tárhely – a lista egyik legjobb tároló/ár aránya"
+    - "IP68 + IP69 vízállóság"
+    - "4K@30fps videó"
+  kontra:
+    - "Nincs teleobiektív – csak digitális zoom"
+    - "Makró kamera 2 MP – a valóságban haszontalan, csak specifikációs marketing"
+    - "Főkamera max. 4K@30fps – nincs 60fps"
+    - "Ultraszéles csak 8 MP, nincs AF, csak 1080p@30fps selfie videó"
+    - "Snapdragon 6 Gen 1 chip – közepes teljesítmény, képfeldolgozásban lassabb az erős versenytársakhoz képest"
+    - "ColorOS erősen testreszabott, sok előre telepített alkalmazással"
+  kinek_ajanlott: "Akinek fontosak a selfiek és a megbízható nappali fotók, 512 GB tárhelyre van szüksége, és nem kell zoom vagy prémium videóminőség."
 
-- modell: "Redmi Note 10 Pro"
-  pro: ["108 MP főkamera – részletgazdag képek jó fényben", "Ultraszéles + makró + mélységérzékelő négy kamerás rendszer", "Bizonyított, kipróbált modell – sok teszt és vélemény elérhető"]
-  kontra: ["Nincs OIS – egyetlen a listán e nélkül, videónál és sötétben érezhetően rosszabb", "Nincs teleobiektív – csak digitális zoom", "Max. 4K@30fps", "2021-es szenzortechnológia – minden más modell jobb hardverrel rendelkezik", "Nincs garantált szoftverfrissítés", "Kis előlapi kamera (16 MP)", "A 2 MP-es mélység- és makróérzékelők szinte haszontalanok"]
-  kinek_ajanlott: "Csak akkor, ha az ár döntő szempont és új telefont vásárolsz – minden más modell kamerailag jobb 2024–2026 között."
+- modell: "Nothing Phone (3a)"
+  pro:
+    - "2× valódi optikai zoom teleobiektívvel (50 MP, f/2.0) – dedikált tele ritka ebben az árban [GSMArena review, 2025-03]"
+    - "Samsung ISOCELL GN9 szenzor (1/1.57\") a főkamerán, OIS, f/1.88"
+    - "12 GB RAM – a lista egyik legjobb memória/ár aránya"
+    - "Egyedi, azonnal felismerhető design – átlátszó hátlap, Glyph fények"
+    - "3 év Android frissítés + 6 év biztonsági frissítés garantálva"
+    - "Snapdragon 7s Gen 3 chip – gyors és energiahatékony"
+  kontra:
+    - "Teleobiektív csak 2× – a Nothing Phone (4a) már 3,5× periszkópos zoomot hoz ugyanolyan árban"
+    - "Ultraszéles csak 8 MP, nincs AF – makrózásra alkalmatlan"
+    - "Képminőség nem ér fel a nagy márkák azonos árú modelljeihez [Amateur Photographer review]"
+    - "Selfie kamera csak 32 MP f/2.2, 1080p@30fps – nem kiemelkedő"
+    - "5000 mAh akku – a lista egyik legkisebb akkumulátora"
+    - "Nincs IP67/68 – csak IP54 splash resistance"
+  kinek_ajanlott: "Aki egyedi designt, megbízható hétköznapi teljesítményt és legalapszintű optikai zoomot akar – de a legfrissebb (4a) modell ma már jobb értéket képvisel ugyanabban az árban."
+  megjegyzes: "A Nothing Phone (4a) 2026 márciusában jelent meg 3,5× periszkópos zoommal, hasonló áron – érdemes összehasonlítani vásárlás előtt."
+
+- modell: "Nothing Phone (4a)"
+  pro:
+    - "3,5× (80mm) periszkópos optikai zoom (50 MP, OIS) – jelentős ugrás a (3a) 2×-eséhez képest [GSMArena review, 2026-03]"
+    - "Ugyanaz a Samsung GN9 főkamera szenzor (1/1.57\") mint a (3a)-n, OIS, f/1.88"
+    - "50 MP selfie kamera – kiemelkedő a mezőnyben"
+    - "Egyedi design, Glyph mini-LED rendszer, Essential Key funkciógomb"
+    - "3 év Android frissítés + 6 év biztonsági frissítés"
+    - "Snapdragon 7s Gen 4 chip"
+  kontra:
+    - "Ultraszéles csak 8 MP, fix fókusz, nincs AF – változatlanul a rendszer gyenge pontja [GSMArena]"
+    - "Selfie videó csak 1080p@60fps – nem 4K"
+    - "Csak IP64 vízállóság – nincs IP67/68, gyengébb védelmi besorolás mint a versenytársak többségénél"
+    - "Műanyag keret (a Pro fém keretes) – prémiumos kézérzet nélkül"
+    - "5080 mAh akku, 45W töltés – nem kiemelkedő"
+    - "Főkamera szenzorméret (1/1.57\") nem versenyez a Redmi Note 15 Pro vagy Xiaomi 15T Pro hardverével sötétben"
+  kinek_ajanlott: "Aki egyedi designt, tiszta szoftvert és valódi optikai zoomot (3,5×) akar megfizethető áron – és nem a legjobb sötétképet keresi."

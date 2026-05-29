@@ -64,21 +64,23 @@ def parse_yaml_phones(path: Path) -> list[dict]:
         battery = f"{battery_mah} mAh" if battery_mah else ""
 
         phones.append({
-            "name":        entry.get("modell", ""),
-            "price":       _fmt_price(entry.get("ar_huf")),
-            "battery":     battery,
-            "sensor_size": cam.get("szenzormeret", "") or "",
-            "aperture":    cam.get("rekesz", "")       or "",
-            "ois":         bool(cam.get("ois", False)),
-            "max_zoom":    cam.get("max_zoom")          or "",
-            "max_video":   cam.get("max_video", "")     or "",
-            "storage":     storage,
-            "height":      _to_float(dims.get("magassag")),
-            "width":       _to_float(dims.get("szelesseg")),
-            "thickness":   _to_float(dims.get("vastagsag")),
-            "link":        _extract_link(entry.get("link", "")),
-            "_raw":        entry,          # kept for auto pro/con generation
-            "_selfie":     selfie,
+            "name":             entry.get("modell", ""),
+            "price":            _fmt_price(entry.get("ar_huf")),
+            "battery":          battery,
+            "sensor_size":      cam.get("szenzormeret", "") or "",
+            "aperture":         cam.get("rekesz", "")       or "",
+            "ois":              bool(cam.get("ois", False)),
+            "max_zoom":         cam.get("max_zoom")          or "",
+            "max_video":        cam.get("max_video", "")     or "",
+            "selfie_megapixel": selfie.get("megapixel"),
+            "selfie_aperture":  selfie.get("rekesz", "")     or "",
+            "selfie_max_video": selfie.get("max_video", "")  or "",
+            "storage":          storage,
+            "height":           _to_float(dims.get("magassag")),
+            "width":            _to_float(dims.get("szelesseg")),
+            "thickness":        _to_float(dims.get("vastagsag")),
+            "link":             _extract_link(entry.get("link", "")),
+            "_raw":             entry,          # kept for auto pro/con generation
         })
 
     return phones
@@ -237,7 +239,7 @@ def seed_db() -> None:
     with get_db() as conn:
         for phone in phones:
             raw    = phone.pop("_raw", {})
-            selfie = phone.pop("_selfie", {})
+            selfie = raw.get("szelfi_kamera", {}) or {}
 
             pc = _find_pro_con(phone["name"], pro_con_data)
             if pc is None:
@@ -246,12 +248,16 @@ def seed_db() -> None:
             cursor = conn.execute(
                 """INSERT INTO phones
                    (name, price, battery, sensor_size, aperture, ois, max_zoom,
-                    max_video, storage, height, width, thickness, link, recommended_for)
-                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    max_video, selfie_megapixel, selfie_aperture, selfie_max_video,
+                    storage, height, width, thickness, link, recommended_for)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (
                     phone["name"], phone["price"], phone["battery"],
                     phone["sensor_size"], phone["aperture"], int(phone["ois"]),
-                    phone["max_zoom"], phone["max_video"], phone["storage"],
+                    phone["max_zoom"], phone["max_video"],
+                    phone.get("selfie_megapixel"), phone.get("selfie_aperture", ""),
+                    phone.get("selfie_max_video", ""),
+                    phone["storage"],
                     phone["height"], phone["width"], phone["thickness"],
                     phone["link"], pc["recommended_for"],
                 ),
@@ -270,4 +276,27 @@ def seed_db() -> None:
 
     print(f"[seed] Seeded {len(phones)} phones.")
     fix_seed_bug()
+
+
+def sync_selfie_from_yaml() -> None:
+    """Update selfie columns from osszehasonlito.yaml (idempotent)."""
+    phones_path = DATA_DIR / "osszehasonlito.yaml"
+    if not phones_path.exists():
+        return
+
+    phones = parse_yaml_phones(phones_path)
+    with get_db() as conn:
+        for phone in phones:
+            conn.execute(
+                """UPDATE phones
+                   SET selfie_megapixel=?, selfie_aperture=?, selfie_max_video=?
+                   WHERE name=?""",
+                (
+                    phone.get("selfie_megapixel"),
+                    phone.get("selfie_aperture", ""),
+                    phone.get("selfie_max_video", ""),
+                    phone["name"],
+                ),
+            )
+    print(f"[sync] Selfie fields synced for {len(phones)} phones.")
 

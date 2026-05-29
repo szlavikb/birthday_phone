@@ -17,21 +17,29 @@ const App = (() => {
     sortDir: 'asc',
     activeDescKey: null,    // for desc modal
     drawerPhoneId: null,
+    cameraWinners: {},      // { column_key: phone_id[] } from /api/camera-winners
   };
+
+  const CAMERA_COL_KEYS = new Set([
+    'sensor_size', 'aperture', 'ois', 'max_zoom', 'max_video',
+    'selfie_megapixel', 'selfie_aperture', 'selfie_max_video',
+  ]);
 
   /* ---------------------------------------------------------------
      Bootstrap
   --------------------------------------------------------------- */
   async function init() {
     try {
-      const [phonesRes, descRes, stateRes] = await Promise.all([
+      const [phonesRes, descRes, stateRes, winnersRes] = await Promise.all([
         fetch('/api/phones'),
         fetch('/api/descriptions'),
         fetch('/api/state'),
+        fetch('/api/camera-winners'),
       ]);
       state.phones       = await phonesRes.json();
       state.descriptions = await descRes.json();
       state.appState     = await stateRes.json();
+      state.cameraWinners = (await winnersRes.json()).winners || {};
       // Ensure excluded is always an array (backwards-compat)
       if (!Array.isArray(state.appState.excluded)) state.appState.excluded = [];
       renderView();
@@ -85,6 +93,37 @@ const App = (() => {
     return '<span class="ois-no">✗ Nincs</span>';
   }
 
+  function selfieMpLabel(val) {
+    if (val == null || val === '') return '–';
+    return `${val} MP`;
+  }
+
+  function isBestInMap(bestMap, field, phoneId) {
+    const w = bestMap[field];
+    if (!w) return false;
+    if (Array.isArray(w)) return w.map(String).includes(String(phoneId));
+    return String(w) === String(phoneId);
+  }
+
+  function isCameraBest(colKey, phoneId) {
+    return isBestInMap(state.cameraWinners, colKey, phoneId);
+  }
+
+  async function fetchCameraWinners(phoneIds = null) {
+    let url = '/api/camera-winners';
+    if (phoneIds && phoneIds.length) {
+      url += '?ids=' + phoneIds.map(encodeURIComponent).join(',');
+    }
+    const data = await fetch(url).then(r => r.json());
+    return data.winners || {};
+  }
+
+  async function refreshCameraWinners(phoneIds = null) {
+    const winners = await fetchCameraWinners(phoneIds);
+    if (!phoneIds) state.cameraWinners = winners;
+    return winners;
+  }
+
   function escHtml(s) {
     if (s == null) return '–';
     return String(s)
@@ -106,6 +145,9 @@ const App = (() => {
     { key: 'ois',         label: 'OIS',          field: 'ois' },
     { key: 'max_zoom',    label: 'Max. zoom',    field: 'max_zoom' },
     { key: 'max_video',   label: 'Max. videó',   field: 'max_video' },
+    { key: 'selfie_megapixel', label: 'Szelfi MP',     field: 'selfie_megapixel' },
+    { key: 'selfie_aperture',  label: 'Szelfi rekesz', field: 'selfie_aperture' },
+    { key: 'selfie_max_video', label: 'Szelfi videó', field: 'selfie_max_video' },
     { key: 'storage',     label: 'ROM / RAM',    field: 'storage' },
     { key: 'height',      label: 'Ma. (mm)',     field: 'height' },
     { key: 'width',       label: 'Sz. (mm)',     field: 'width' },
@@ -141,8 +183,16 @@ const App = (() => {
 
       const cells = TABLE_COLS.slice(1).map(col => {
         let val = p[col.field];
-        if (col.key === 'ois') return `<td>${oisLabel(val)}</td>`;
-        return `<td>${escHtml(val ?? '–')}</td>`;
+        const bestCls = CAMERA_COL_KEYS.has(col.key) && isCameraBest(col.key, p.id)
+          ? ' highlight-best' : '';
+        if (col.key === 'ois') return `<td class="${bestCls.trim()}">${oisLabel(val)}</td>`;
+        if (col.key === 'selfie_megapixel') {
+          const display = selfieMpLabel(val);
+          const prefix = bestCls ? '⭐ ' : '';
+          return `<td class="${bestCls.trim()}">${prefix}${escHtml(display)}</td>`;
+        }
+        const prefix = bestCls ? '⭐ ' : '';
+        return `<td class="${bestCls.trim()}">${prefix}${escHtml(val ?? '–')}</td>`;
       }).join('');
 
       return `<tr class="${rowCls}" onclick="App.openDrawer('${p.id}')">${nameCell}${cells}</tr>`;
@@ -227,23 +277,35 @@ const App = (() => {
           </div>
           <div class="spec-item">
             <span class="spec-label">Szenzor</span>
-            <span class="spec-value">${escHtml(p.sensor_size)}</span>
+            <span class="spec-value${isCameraBest('sensor_size', p.id) ? ' highlight-best' : ''}">${isCameraBest('sensor_size', p.id) ? '⭐ ' : ''}${escHtml(p.sensor_size)}</span>
           </div>
           <div class="spec-item">
             <span class="spec-label">Rekesz</span>
-            <span class="spec-value">${escHtml(p.aperture)}</span>
+            <span class="spec-value${isCameraBest('aperture', p.id) ? ' highlight-best' : ''}">${isCameraBest('aperture', p.id) ? '⭐ ' : ''}${escHtml(p.aperture)}</span>
           </div>
           <div class="spec-item">
             <span class="spec-label">OIS</span>
-            <span class="spec-value">${p.ois ? '✓' : '✗'}</span>
+            <span class="spec-value${isCameraBest('ois', p.id) ? ' highlight-best' : ''}">${isCameraBest('ois', p.id) ? '⭐ ' : ''}${p.ois ? '✓' : '✗'}</span>
           </div>
           <div class="spec-item">
             <span class="spec-label">Zoom</span>
-            <span class="spec-value">${escHtml(p.max_zoom) || '–'}</span>
+            <span class="spec-value${isCameraBest('max_zoom', p.id) ? ' highlight-best' : ''}">${isCameraBest('max_zoom', p.id) ? '⭐ ' : ''}${escHtml(p.max_zoom) || '–'}</span>
           </div>
           <div class="spec-item">
             <span class="spec-label">Videó</span>
-            <span class="spec-value">${escHtml(p.max_video)}</span>
+            <span class="spec-value${isCameraBest('max_video', p.id) ? ' highlight-best' : ''}">${isCameraBest('max_video', p.id) ? '⭐ ' : ''}${escHtml(p.max_video)}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Szelfi MP</span>
+            <span class="spec-value${isCameraBest('selfie_megapixel', p.id) ? ' highlight-best' : ''}">${isCameraBest('selfie_megapixel', p.id) ? '⭐ ' : ''}${escHtml(selfieMpLabel(p.selfie_megapixel))}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Szelfi rekesz</span>
+            <span class="spec-value${isCameraBest('selfie_aperture', p.id) ? ' highlight-best' : ''}">${isCameraBest('selfie_aperture', p.id) ? '⭐ ' : ''}${escHtml(p.selfie_aperture) || '–'}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Szelfi videó</span>
+            <span class="spec-value${isCameraBest('selfie_max_video', p.id) ? ' highlight-best' : ''}">${isCameraBest('selfie_max_video', p.id) ? '⭐ ' : ''}${escHtml(p.selfie_max_video) || '–'}</span>
           </div>
         </div>
         ${p.price ? `<div class="card-price">${escHtml(p.price)}</div>` : ''}
@@ -284,8 +346,10 @@ const App = (() => {
       imageMap[p.id] = await fetch(`/api/phones/${encodeURIComponent(p.name)}/images`).then(r => r.json()).catch(() => []);
     }));
 
-    // Compute best values across selected phones
+    // Compute best values: camera columns from backend, rest client-side
     const bestMap = _computeBestMap(phones);
+    const cameraBest = await fetchCameraWinners(selected);
+    Object.assign(bestMap, cameraBest);
 
     const columns = phones.map(p => buildCompareCol(p, imageMap[p.id] || [], bestMap)).join('');
 
@@ -326,7 +390,7 @@ const App = (() => {
     ].map(([field, label, colKey]) => {
       let val = p[field];
       if (field === 'ois') val = val ? '✓ Van' : '✗ Nincs';
-      const isBest = bestMap[field] != null && String(bestMap[field]) === String(p.id);
+      const isBest = isBestInMap(bestMap, field, p.id);
       return `<div class="compare-spec">
         <span class="cs-label">
           ${label}
@@ -506,13 +570,19 @@ const App = (() => {
     const best = {};
     const active = phones.filter(p => !isExcluded(p.id));
     for (const [field, scorer] of Object.entries(SCORERS)) {
-      let topScore = -Infinity, topId = null, tie = false;
+      let topScore = -Infinity;
+      let winners = [];
       for (const p of active) {
         const s = scorer(p[field]);
-        if (s > topScore) { topScore = s; topId = String(p.id); tie = false; }
-        else if (s === topScore && topScore > -Infinity) { tie = true; }
+        const pid = String(p.id);
+        if (s > topScore) {
+          topScore = s;
+          winners = [pid];
+        } else if (s === topScore && topScore > -Infinity) {
+          winners.push(pid);
+        }
       }
-      best[field] = tie ? null : topId;
+      best[field] = winners;
     }
     return best;
   }
@@ -741,6 +811,7 @@ const App = (() => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ excluded: excl }),
     });
+    await refreshCameraWinners();
     renderView();
     if (state.drawerPhoneId === sid) openDrawer(sid);
   }

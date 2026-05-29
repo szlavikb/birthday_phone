@@ -23,9 +23,10 @@ from db import (
     db_list_descriptions,
     db_update_description,
 )
-from parsers import seed_db
+from parsers import seed_db, sync_selfie_from_yaml
 from state import load_state, save_state, ensure_state_file
 from images import list_images, save_image, delete_image
+from scoring import compute_camera_winners, CAMERA_FIELDS
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
@@ -130,6 +131,37 @@ def api_post_state():
 
 
 # ---------------------------------------------------------------------------
+# Camera column winners (best value among non-excluded phones)
+# ---------------------------------------------------------------------------
+
+@app.get("/api/camera-winners")
+def api_camera_winners():
+    """
+    Return the best phone id per camera column.
+
+    Query params:
+      ids – optional comma-separated phone ids to restrict comparison
+            (e.g. compare view). Without ids, all non-excluded phones count.
+    """
+    phones = db_list_phones()
+    phones.append(REFERENCE_PHONE)
+
+    state = load_state()
+    excluded = {str(x) for x in state.get("excluded") or []}
+
+    ids_param = request.args.get("ids", "").strip()
+    phone_ids = {s.strip() for s in ids_param.split(",") if s.strip()} or None
+
+    winners = compute_camera_winners(phones, excluded_ids=excluded, phone_ids=phone_ids)
+    return jsonify({
+        "winners": winners,
+        "fields": list(CAMERA_FIELDS),
+        "excluded": sorted(excluded),
+        "phone_ids": sorted(phone_ids) if phone_ids else None,
+    })
+
+
+# ---------------------------------------------------------------------------
 # Images
 # ---------------------------------------------------------------------------
 
@@ -162,6 +194,7 @@ def api_delete_image(name: str, filename: str):
 def main() -> None:
     init_db()
     seed_db()
+    sync_selfie_from_yaml()
     fix_seed_bug()
     ensure_state_file()
     app.run(debug=True, port=5000)
