@@ -16,7 +16,7 @@
     - "25W vezetékes töltés – lassú a mezőnyhöz képest (Xiaomi 67–90W, Motorola 68W)"
   kinek_ajanlott: "Akinek fontos a zoom, a megbízható videó és a Samsung ökoszisztéma (Galaxy AI, One UI, hosszú frissítési támogatás), és nem zavarja a nem friss kamerahardver."
 
-- modell: "Redmi Note 15 Pro 5G"
+- modell: "Xiaomi Redmi Note 15 Pro 5G"
   pro:
     - "1/1.4\" főkamera szenzor – a lista legnagyobb szenzora, messze a legjobb sötétkép-teljesítmény ebben az árkategóriában"
     - "200 MP → 50 MP pixel binning: rendkívül részletes képek jó fényben"
@@ -30,7 +30,7 @@
     - "MediaTek Dimensity 7300 Ultra chip – képfeldolgozásban elmarad a Snapdragon 7s Gen 3-tól (Pro+)"
   kinek_ajanlott: "Fényképezésre fókuszáló felhasználóknak, akik főleg 1× zoom mellett fotóznak és sötétben is kiemelkedő képet akarnak a lehető legolcsóbban."
 
-- modell: "Redmi Note 15 Pro+ 5G"
+- modell: "Xiaomi Redmi Note 15 Pro Plus 5G"
   pro:
     - "Ugyanolyan 1/1.4\" szenzor mint a sima Pro, de Snapdragon 7s Gen 3 chippel – gyorsabb képfeldolgozás és AI"
     - "32 MP előlapi kamera (f/2.2) – jelentős selfie előny a 20 MP-es Pro-val szemben"
@@ -133,7 +133,7 @@
     - "Drágább mint a 15T Pro (229 990 Ft), miközben fő kamerában nem hozza azt a szintet"
   kinek_ajanlott: "Aki kiemelkedő 5× zoomot és nagy akkumulátort akar egy kompaktabb, de nem Pro-szintű kamerarendszerben – és nem ragaszkodik a Leica feldolgozáshoz."
 
-- modell: "Google Pixel 9a (Obszidián)"
+- modell: "Google Pixel 9a"
   pro:
     - "Tensor G4 AI feldolgozás – Best Take, Magic Eraser, Photo Unblur, Night Sight: a legjobb számítási fotográfia a listán [GSMArena review, 2025]"
     - "4K@60fps főkamerával és selfie kamerával egyaránt"

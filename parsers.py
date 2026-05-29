@@ -7,7 +7,7 @@ from pathlib import Path
 import yaml
 
 from config import DATA_DIR
-from db import db_phone_exists, get_db, fix_seed_bug
+from db import get_db, fix_seed_bug
 
 
 # ---------------------------------------------------------------------------
@@ -80,7 +80,7 @@ def parse_yaml_phones(path: Path) -> list[dict]:
             "width":            _to_float(dims.get("szelesseg")),
             "thickness":        _to_float(dims.get("vastagsag")),
             "link":             _extract_link(entry.get("link", "")),
-            "_raw":             entry,          # kept for auto pro/con generation
+            "_raw":             entry,
         })
 
     return phones
@@ -112,110 +112,6 @@ def parse_yaml_pro_con(path: Path) -> dict[str, dict]:
 
 
 # ---------------------------------------------------------------------------
-# Auto-generated pro/con from raw YAML data
-# ---------------------------------------------------------------------------
-
-def _auto_pro_con(raw: dict, selfie: dict) -> dict:
-    """Generate basic pro/con items from spec data when no manual entry exists."""
-    cam = raw.get("kamera", {}) or {}
-    pros: list[str] = []
-    cons: list[str] = []
-
-    sensor   = cam.get("szenzormeret", "") or ""
-    aperture = cam.get("rekesz", "")       or ""
-    ois      = bool(cam.get("ois", False))
-    max_zoom = cam.get("max_zoom")          or ""
-    max_video= cam.get("max_video", "")     or ""
-    kiemelt  = cam.get("kiemelt_tulajdonsag")
-    battery_mah  = raw.get("akkumulator_mah") or 0
-    selfie_mp    = selfie.get("megapixel")    or 0
-
-    # Sensor size
-    m = re.search(r"1/(\d+\.?\d*)", sensor)
-    if m:
-        d = float(m.group(1))
-        if d <= 1.4:
-            pros.append(f"Kiemelkedően nagy szenzor ({sensor}) – legjobb sötétteljesítmény")
-        elif d <= 1.6:
-            pros.append(f"Nagy szenzor ({sensor}) – jó sötétteljesítmény")
-        elif d > 1.9:
-            cons.append(f"Kisebb szenzorméret ({sensor})")
-
-    # Aperture
-    m = re.search(r"f/(\d+\.?\d*)", aperture, re.I)
-    if m:
-        fn = float(m.group(1))
-        if fn <= 1.6:
-            pros.append(f"Tág rekesz ({aperture}) – kiváló fénygyűjtés sötétben")
-        elif fn <= 1.8:
-            pros.append(f"Jó rekesz ({aperture}) – megfelelő fénygyűjtés")
-
-    # OIS
-    if ois:
-        pros.append("OIS optikai képstabilizátor – stabil fotók és videók")
-    else:
-        cons.append("Nincs OIS – videónál és sötétben érzékelhető kézremegés")
-
-    # Zoom
-    if max_zoom:
-        pros.append(f"Optikai zoom: {max_zoom} – valódi közelítés")
-    else:
-        cons.append("Nincs dedikált teleobiektív – csak digitális zoom")
-
-    # Video
-    v = max_video.upper()
-    if "8K" in v:
-        pros.append(f"8K videófelvétel ({max_video})")
-    elif "4K" in v and "60" in v:
-        pros.append("4K@60fps videófelvétel – gördülékeny felvételek")
-    elif "4K" in v:
-        cons.append("Videó max. 4K@30fps – nincs 60fps mód")
-
-    # Battery
-    if battery_mah >= 6000:
-        pros.append(f"Nagy akkumulátor ({battery_mah} mAh) – hosszú üzemidő")
-
-    # Selfie camera
-    if selfie_mp >= 32:
-        pros.append(f"Kiemelkedő szelfikamera ({selfie_mp} MP)")
-    elif selfie_mp and selfie_mp < 16:
-        cons.append(f"Kisebb szelfikamera ({selfie_mp} MP)")
-
-    # Highlighted feature(s) from raw data
-    if kiemelt:
-        if isinstance(kiemelt, list):
-            for k in kiemelt:
-                if k not in " ".join(pros):
-                    pros.append(str(k).capitalize())
-        else:
-            kstr = str(kiemelt).capitalize()
-            if kstr not in " ".join(pros):
-                pros.append(kstr)
-
-    return {"pros": pros, "cons": cons, "recommended_for": ""}
-
-
-# ---------------------------------------------------------------------------
-# Pro/con matching: fuzzy-match phone name → pro_con dict key
-# ---------------------------------------------------------------------------
-
-def _find_pro_con(phone_name: str, pro_con_data: dict) -> dict | None:
-    """Return the best matching pro_con entry, or None if no match."""
-    # Normalize: strip trailing color/variant info in parentheses
-    norm_name = re.sub(r"\s*\(.*?\)", "", phone_name).strip().lower()
-    norm_name_short = re.sub(r"^(xiaomi|motorola|google|samsung|oppo|nothing|poco)\s+", "", norm_name).strip()
-
-    for key, val in pro_con_data.items():
-        norm_key = re.sub(r"\s*\(.*?\)", "", key).strip().lower()
-        norm_key_short = re.sub(r"^(xiaomi|motorola|google|samsung|oppo|nothing|poco)\s+", "", norm_key).strip()
-        if norm_key == norm_name or norm_key_short == norm_name_short:
-            return val
-        if norm_name.startswith(norm_key) or norm_key.startswith(norm_name):
-            return val
-    return None
-
-
-# ---------------------------------------------------------------------------
 # Seed
 # ---------------------------------------------------------------------------
 
@@ -238,12 +134,12 @@ def seed_db() -> None:
 
     with get_db() as conn:
         for phone in phones:
-            raw    = phone.pop("_raw", {})
-            selfie = raw.get("szelfi_kamera", {}) or {}
+            phone.pop("_raw", None)
 
-            pc = _find_pro_con(phone["name"], pro_con_data)
+            pc = pro_con_data.get(phone["name"])
             if pc is None:
-                pc = _auto_pro_con(raw, selfie)
+                print(f"[seed] No pro_kontra entry for {phone['name']!r}")
+                pc = {"pros": [], "cons": [], "recommended_for": ""}
 
             cursor = conn.execute(
                 """INSERT INTO phones
@@ -276,6 +172,49 @@ def seed_db() -> None:
 
     print(f"[seed] Seeded {len(phones)} phones.")
     fix_seed_bug()
+
+
+def sync_pro_con_from_yaml() -> None:
+    """Update pro/con and recommended_for from pro_kontra.yaml (idempotent)."""
+    phones_path = DATA_DIR / "osszehasonlito.yaml"
+    pro_con_path = DATA_DIR / "pro_kontra.yaml"
+    if not phones_path.exists() or not pro_con_path.exists():
+        return
+
+    phones = parse_yaml_phones(phones_path)
+    pro_con_data = parse_yaml_pro_con(pro_con_path)
+    updated = 0
+
+    with get_db() as conn:
+        for phone in phones:
+            pc = pro_con_data.get(phone["name"])
+            if pc is None:
+                print(f"[sync] No pro_kontra entry for {phone['name']!r}")
+                continue
+            row = conn.execute(
+                "SELECT id FROM phones WHERE name=?", (phone["name"],)
+            ).fetchone()
+            if row is None:
+                continue
+            phone_id = row[0]
+            conn.execute(
+                "UPDATE phones SET recommended_for=? WHERE id=?",
+                (pc["recommended_for"], phone_id),
+            )
+            conn.execute("DELETE FROM pro_con WHERE phone_id=?", (phone_id,))
+            for text in pc["pros"]:
+                conn.execute(
+                    "INSERT INTO pro_con(phone_id,type,text) VALUES (?,?,?)",
+                    (phone_id, "pro", text),
+                )
+            for text in pc["cons"]:
+                conn.execute(
+                    "INSERT INTO pro_con(phone_id,type,text) VALUES (?,?,?)",
+                    (phone_id, "con", text),
+                )
+            updated += 1
+
+    print(f"[sync] Pro/con synced for {updated} phones.")
 
 
 def sync_selfie_from_yaml() -> None:
