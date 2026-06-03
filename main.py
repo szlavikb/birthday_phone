@@ -23,7 +23,12 @@ from db import (
     db_list_descriptions,
     db_update_description,
 )
-from parsers import seed_db, sync_pro_con_from_yaml, sync_selfie_from_yaml
+from parsers import (
+    seed_db,
+    sync_phones_from_yaml,
+    sync_pro_con_from_yaml,
+    sync_selfie_from_yaml,
+)
 from state import load_state, save_state, ensure_state_file
 from images import list_images, save_image, delete_image
 from scoring import compute_camera_winners, CAMERA_FIELDS
@@ -194,6 +199,7 @@ def api_delete_image(name: str, filename: str):
 def main() -> None:
     init_db()
     seed_db()
+    sync_phones_from_yaml()
     sync_pro_con_from_yaml()
     sync_selfie_from_yaml()
     fix_seed_bug()

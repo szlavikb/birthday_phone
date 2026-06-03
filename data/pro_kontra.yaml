@@ -27,13 +27,13 @@
     - "Ultraszéles csak 8 MP, fix fókusz, 1080p videó – gyenge láncszem a rendszerben"
     - "Főkamera max. 4K@30fps – nincs 4K@60fps, ellentétben a POCO X8 Pro-val és a Xiaomi 15T-vel"
     - "20 MP selfie kamera (f/2.2) – gyengébb mint a Pro+ változat 32 MP-es előlapja"
-    - "MediaTek Dimensity 7300 Ultra chip – képfeldolgozásban elmarad a Snapdragon 7s Gen 3-tól (Pro+)"
+    - "MediaTek Dimensity 7300 Ultra chip – képfeldolgozásban elmarad a Snapdragon 7s Gen 4-től (Pro+)"
   kinek_ajanlott: "Fényképezésre fókuszáló felhasználóknak, akik főleg 1× zoom mellett fotóznak és sötétben is kiemelkedő képet akarnak a lehető legolcsóbban."
 
 - modell: "Xiaomi Redmi Note 15 Pro Plus 5G"
   pro:
-    - "Ugyanolyan 1/1.4\" szenzor mint a sima Pro, de Snapdragon 7s Gen 3 chippel – gyorsabb képfeldolgozás és AI"
-    - "32 MP előlapi kamera (f/2.2) – jelentős selfie előny a 20 MP-es Pro-val szemben"
+    - "Ugyanolyan 1/1.4\" szenzor mint a sima Pro, de Snapdragon 7s Gen 4 chippel – gyorsabb képfeldolgozás és AI"
+    - "32 MP előlapi kamera (f/2.2) – ugyanolyan felbontás mint a sima Pro-n, de Snapdragon 7s Gen 4 chippel jobb AI feldolgozás és gyorsabb képkészítés"
     - "OIS + f/1.7 rekesz a főkamerán"
     - "200 MP → 50 MP pixel binning: részletgazdag végeredmény"
   kontra:
@@ -130,7 +130,7 @@
     - "Nincs Leica feldolgozás – a 15T-hez és 15T Pro-hoz képest visszalépés képminőségben [Expert Reviews]"
     - "Ultraszéles csak 12 MP, fix fókusz – makrózásra alkalmatlan, sötétben gyengébb"
     - "MediaTek Dimensity 8500 Ultra chip – teljesítményben elmarad a 15T Pro Dimensity 9400+-jától"
-    - "Drágább mint a 15T Pro (229 990 Ft), miközben fő kamerában nem hozza azt a szintet"
+    - "~10 ezer Ft-tal olcsóbb a 15T Pronál (219 990 vs 229 990 Ft), de kamerarendszerben – főleg sötétteljesítményben és Leica feldolgozásban – egyértelműen elmarad tőle; az árkedvezmény ehhez képest csekély"
   kinek_ajanlott: "Aki kiemelkedő 5× zoomot és nagy akkumulátort akar egy kompaktabb, de nem Pro-szintű kamerarendszerben – és nem ragaszkodik a Leica feldolgozáshoz."
 
 - modell: "Google Pixel 9a"

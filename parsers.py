@@ -239,3 +239,61 @@ def sync_selfie_from_yaml() -> None:
             )
     print(f"[sync] Selfie fields synced for {len(phones)} phones.")
 
+
+def sync_phones_from_yaml() -> None:
+    """Upsert core phone fields from osszehasonlito.yaml (idempotent)."""
+    phones_path = DATA_DIR / "osszehasonlito.yaml"
+    if not phones_path.exists():
+        return
+
+    phones = parse_yaml_phones(phones_path)
+    inserted = 0
+    updated = 0
+
+    with get_db() as conn:
+        for phone in phones:
+            row = conn.execute(
+                "SELECT id FROM phones WHERE name=?",
+                (phone["name"],),
+            ).fetchone()
+
+            if row is None:
+                conn.execute(
+                    """INSERT INTO phones
+                       (name, price, battery, sensor_size, aperture, ois, max_zoom,
+                        max_video, selfie_megapixel, selfie_aperture, selfie_max_video,
+                        storage, height, width, thickness, link, recommended_for)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    (
+                        phone["name"], phone["price"], phone["battery"],
+                        phone["sensor_size"], phone["aperture"], int(phone["ois"]),
+                        phone["max_zoom"], phone["max_video"],
+                        phone.get("selfie_megapixel"), phone.get("selfie_aperture", ""),
+                        phone.get("selfie_max_video", ""),
+                        phone["storage"],
+                        phone["height"], phone["width"], phone["thickness"],
+                        phone["link"], "",
+                    ),
+                )
+                inserted += 1
+            else:
+                conn.execute(
+                    """UPDATE phones
+                       SET price=?, battery=?, sensor_size=?, aperture=?, ois=?,
+                           max_zoom=?, max_video=?, selfie_megapixel=?, selfie_aperture=?,
+                           selfie_max_video=?, storage=?, height=?, width=?, thickness=?,
+                           link=?
+                       WHERE name=?""",
+                    (
+                        phone["price"], phone["battery"], phone["sensor_size"],
+                        phone["aperture"], int(phone["ois"]), phone["max_zoom"],
+                        phone["max_video"], phone.get("selfie_megapixel"),
+                        phone.get("selfie_aperture", ""), phone.get("selfie_max_video", ""),
+                        phone["storage"], phone["height"], phone["width"],
+                        phone["thickness"], phone["link"], phone["name"],
+                    ),
+                )
+                updated += 1
+
+    print(f"[sync] Phones synced: {updated} updated, {inserted} inserted.")
+

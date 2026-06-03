@@ -25,7 +25,7 @@
 - modell: "Xiaomi Redmi Note 15 Pro Plus 5G"
   szin: "Mokkabarna"
   link: "[https://www.alza.hu/xiaomi-redmi-note-15-pro-plus-5g-8gb-256gb-fekete-d13196123.htm](https://www.alza.hu/xiaomi-redmi-note-15-pro-plus-5g-8gb-256gb-fekete-d13196123.htm)"
-  ar_huf: 159990
+  ar_huf: 144990
   akkumulator_mah: 6500
   memoria:
     ram_gb: 8
@@ -38,7 +38,7 @@
     max_video: "4K@30fps"
     kiemelt_tulajdonsag: "legjobb szenzorméret"
   szelfi_kamera:
-    megapixel: 20
+    megapixel: 32
     rekesz: "f/2.2"
     max_video: "1080p@60fps"
   meretek_mm:
@@ -72,7 +72,7 @@
 
 - modell: "Xiaomi 15T Pro"
   link: "[https://www.mi.com/hu/product/xiaomi-15t-pro/buy/](https://www.mi.com/hu/product/xiaomi-15t-pro/buy/)"
-  ar_huf: 229990
+  ar_huf: 239990
   akkumulator_mah: 5500
   memoria:
     ram_gb: 12
@@ -86,7 +86,7 @@
     kiemelt_tulajdonsag: ["legjobb szenzorméret", "kiemelkedő rekesz", "legjobb zoom"]
   szelfi_kamera:
     megapixel: 32
-    rekesz: "f/2.0"
+    rekesz: "f/2.2"
     max_video: "4K@30fps"
   meretek_mm:
     magassag: 162.7
@@ -110,7 +110,7 @@
     kiemelt_tulajdonsag: "legjobb zoom"
   szelfi_kamera:
     megapixel: 32
-    rekesz: "f/2.0"
+    rekesz: "f/2.2"
     max_video: "4K@30fps"
   meretek_mm:
     magassag: 157.6

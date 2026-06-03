@@ -383,6 +383,9 @@ const App = (() => {
       ['ois',         'OIS',          'ois'],
       ['max_zoom',    'Max. zoom',    'max_zoom'],
       ['max_video',   'Max. videó',   'max_video'],
+      ['selfie_megapixel', 'Szelfi MP',     'selfie_megapixel'],
+      ['selfie_aperture',  'Szelfi rekesz', 'selfie_aperture'],
+      ['selfie_max_video', 'Szelfi videó',  'selfie_max_video'],
       ['storage',     'ROM / RAM',    'storage'],
       ['height',      'Ma. (mm)',     'height'],
       ['width',       'Sz. (mm)',     'width'],
@@ -390,6 +393,8 @@ const App = (() => {
     ].map(([field, label, colKey]) => {
       let val = p[field];
       if (field === 'ois') val = val ? '✓ Van' : '✗ Nincs';
+      if (field === 'selfie_megapixel') val = selfieMpLabel(val);
+      if (field === 'selfie_aperture' || field === 'selfie_max_video') val = val || '–';
       const isBest = isBestInMap(bestMap, field, p.id);
       return `<div class="compare-spec">
         <span class="cs-label">
@@ -656,6 +661,9 @@ const App = (() => {
       ['ois',         'OIS',          phone.ois ? '✓ Van' : '✗ Nincs'],
       ['max_zoom',    'Max. zoom',    phone.max_zoom || '–'],
       ['max_video',   'Max. videó',   phone.max_video],
+      ['selfie_megapixel', 'Szelfi MP',     selfieMpLabel(phone.selfie_megapixel)],
+      ['selfie_aperture',  'Szelfi rekesz', phone.selfie_aperture || '–'],
+      ['selfie_max_video', 'Szelfi videó',  phone.selfie_max_video || '–'],
       ['storage',     'ROM / RAM',    phone.storage],
       ['height',      'Magasság',     phone.height ? `${phone.height} mm` : '–'],
       ['width',       'Szélesség',    phone.width   ? `${phone.width} mm` : '–'],
