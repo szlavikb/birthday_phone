@@ -7,7 +7,7 @@ from pathlib import Path
 import yaml
 
 from config import DATA_DIR
-from db import get_db, fix_seed_bug
+from db import get_db, fix_seed_bug, db_list_deleted_phone_names
 
 
 # ---------------------------------------------------------------------------
@@ -131,9 +131,14 @@ def seed_db() -> None:
 
     phones       = parse_yaml_phones(phones_path)
     pro_con_data = parse_yaml_pro_con(pro_con_path) if pro_con_path.exists() else {}
+    deleted_names = db_list_deleted_phone_names()
+    skipped_deleted = 0
 
     with get_db() as conn:
         for phone in phones:
+            if phone["name"] in deleted_names:
+                skipped_deleted += 1
+                continue
             phone.pop("_raw", None)
 
             pc = pro_con_data.get(phone["name"])
@@ -170,7 +175,7 @@ def seed_db() -> None:
                     (phone_id, "con", text),
                 )
 
-    print(f"[seed] Seeded {len(phones)} phones.")
+    print(f"[seed] Seeded {len(phones) - skipped_deleted} phones ({skipped_deleted} skipped: user-deleted).")
     fix_seed_bug()
 
 
@@ -247,11 +252,16 @@ def sync_phones_from_yaml() -> None:
         return
 
     phones = parse_yaml_phones(phones_path)
+    deleted_names = db_list_deleted_phone_names()
     inserted = 0
     updated = 0
+    skipped_deleted = 0
 
     with get_db() as conn:
         for phone in phones:
+            if phone["name"] in deleted_names:
+                skipped_deleted += 1
+                continue
             row = conn.execute(
                 "SELECT id FROM phones WHERE name=?",
                 (phone["name"],),
@@ -295,5 +305,8 @@ def sync_phones_from_yaml() -> None:
                 )
                 updated += 1
 
-    print(f"[sync] Phones synced: {updated} updated, {inserted} inserted.")
+    print(
+        f"[sync] Phones synced: {updated} updated, {inserted} inserted, "
+        f"{skipped_deleted} skipped (user-deleted)."
+    )
 

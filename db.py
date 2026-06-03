@@ -85,6 +85,10 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             label       TEXT NOT NULL,
             description TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS deleted_phones (
+            name TEXT PRIMARY KEY,
+            deleted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
     """)
 
 
@@ -159,7 +163,10 @@ def db_get_phone(phone_id: int) -> dict | None:
 
 def db_create_phone(data: dict) -> dict:
     """Insert a new phone and its pro/con items. Returns the created phone dict."""
+    name = (data.get("name") or "").strip()
     with get_db() as conn:
+        # If a user re-adds a previously deleted phone, allow YAML sync for it again.
+        conn.execute("DELETE FROM deleted_phones WHERE name=?", (name,))
         cursor = conn.execute(
             """INSERT INTO phones
                (name, price, battery, sensor_size, aperture, ois, max_zoom,
@@ -180,6 +187,7 @@ def db_update_phone(phone_id: int, data: dict) -> dict | None:
         existing = conn.execute("SELECT * FROM phones WHERE id=?", (phone_id,)).fetchone()
         if existing is None:
             return None
+        old_name = existing["name"]
         conn.execute(
             """UPDATE phones SET
                name=?, price=?, battery=?, sensor_size=?, aperture=?, ois=?,
@@ -189,6 +197,12 @@ def db_update_phone(phone_id: int, data: dict) -> dict | None:
                WHERE id=?""",
             (*_phone_params(data, existing=existing), phone_id),
         )
+        new_name = (data.get("name") or "").strip() or old_name
+        if new_name != old_name:
+            # A rename means this phone is active; keep tombstones clean.
+            conn.execute("DELETE FROM deleted_phones WHERE name IN (?, ?)", (old_name, new_name))
+        else:
+            conn.execute("DELETE FROM deleted_phones WHERE name=?", (new_name,))
         if "pros" in data or "cons" in data:
             _replace_pro_con(conn, phone_id, data.get("pros", []), data.get("cons", []))
         row = conn.execute("SELECT * FROM phones WHERE id=?", (phone_id,)).fetchone()
@@ -198,10 +212,22 @@ def db_update_phone(phone_id: int, data: dict) -> dict | None:
 def db_delete_phone(phone_id: int) -> bool:
     """Delete a phone. Returns True if it existed, False otherwise."""
     with get_db() as conn:
-        if conn.execute("SELECT 1 FROM phones WHERE id=?", (phone_id,)).fetchone() is None:
+        row = conn.execute("SELECT name FROM phones WHERE id=?", (phone_id,)).fetchone()
+        if row is None:
             return False
+        conn.execute(
+            "INSERT OR REPLACE INTO deleted_phones(name) VALUES (?)",
+            (row["name"],),
+        )
         conn.execute("DELETE FROM phones WHERE id=?", (phone_id,))
     return True
+
+
+def db_list_deleted_phone_names() -> set[str]:
+    """Return names that were explicitly deleted by users and must stay deleted."""
+    with get_db() as conn:
+        rows = conn.execute("SELECT name FROM deleted_phones").fetchall()
+    return {str(r[0]) for r in rows}
 
 
 def db_phone_exists(name: str) -> bool:
